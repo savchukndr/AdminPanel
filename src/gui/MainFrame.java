@@ -28,8 +28,8 @@ public class MainFrame {
                 case "Main":
                     setCurrentPanel(new MainPanel());
                     break;
-                case "Workers":
-                    setCurrentPanel(new WorkersPanel());
+                case "Employees":
+                    setCurrentPanel(new EmployeePanel());
                     break;
                 case "Log out":
                     Main.logout();
@@ -43,7 +43,7 @@ public class MainFrame {
     }
 
     /**
-     * Initialize the contents of the frame.
+     * Initialize the frame contents.
      */
     private void initialize() {
         frame = new JFrame();
@@ -57,11 +57,11 @@ public class MainFrame {
         buttonMain.addActionListener(actionListener);
         frame.getContentPane().add(buttonMain);
 
-        JButton buttonWorkers = new JButton("Workers");
+        JButton buttonEmployees = new JButton("Employees");
 //        buttonMain.setBackground(SystemColor.menu);
-        buttonWorkers.setBounds(105, 10, 100, 20);
-        buttonWorkers.addActionListener(actionListener);
-        frame.getContentPane().add(buttonWorkers);
+        buttonEmployees.setBounds(105, 10, 100, 20);
+        buttonEmployees.addActionListener(actionListener);
+        frame.getContentPane().add(buttonEmployees);
         panel = new JPanel();
         panel.setBounds(0, 72, 784, 489);
         panel.setLayout(null);
@@ -86,10 +86,16 @@ public class MainFrame {
         frame.revalidate();
     }
 
+    /**
+     * Show MainFrame
+     */
     public void show() {
         frame.setVisible(true);
     }
 
+    /**
+     * Dispose MainFrame
+     */
     public void dispose() {
         frame.dispose();
     }

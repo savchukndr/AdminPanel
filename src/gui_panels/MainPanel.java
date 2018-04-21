@@ -8,7 +8,7 @@ import java.awt.event.ActionEvent;
 /**
  * Created by Andrii Savchuk on 21.04.2018.
  * All rights are reserved.
- * If you will have any cuastion, please
+ * If you will have any questions, please
  * contact via email (savchukndr@gmail.com)
  */
 public class MainPanel extends JPanel{
@@ -19,33 +19,34 @@ public class MainPanel extends JPanel{
      * Create the panel.
      */
     public MainPanel() {
+        // Set MainPanel Layout
         setLayout(new BorderLayout());
 
-        //Panels
+        // Panels
         JPanel panelTop = new JPanel();
         JPanel panelLeft = new JPanel();
         panelLeft.setLayout(new GridBagLayout());
         JPanel panelRight = new JPanel();
         panelRight.setLayout(new GridBagLayout());
 
-        //Lables
+        // Lables
         JLabel labelTabName = new JLabel("Main Page");
         panelTop.add(labelTabName);
         JLabel labelListen = new JLabel();
         labelListen.setText("Press \"Start Server\" to start Listening.");
 
-        //Buttons
+        // Buttons
         JButton buttonStartServer = new JButton("Start Server");
         buttonStartServer.addActionListener(this::startActionPerformed);
         JButton buttonStopServer = new JButton("Stop Server");
-        buttonStopServer.addActionListener(this::cencelActionPerformed);
+        buttonStopServer.addActionListener(this::stopActionPerformed);
 
-        //Text
+        // Text
         JTextArea textArea = new JTextArea(20, 40);
         textArea.setEditable(false);
 
-        //adding scroll to main Text Area
-        JScrollPane scroll = new JScrollPane (textArea,
+        // Adding scroll to main Text Area
+        JScrollPane scrollMainPanel = new JScrollPane (textArea,
                 JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         DefaultCaret caret = (DefaultCaret) textArea.getCaret();
         caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
@@ -58,14 +59,15 @@ public class MainPanel extends JPanel{
                 new Insets(0,2,350,2), 2, 2));
 
 
-        //adding scroll with TextArea to panelRight
-        panelRight.add(scroll, new GridBagConstraints(0, 0, 1, 1, 1, 1,
+        // Adding scroll with TextArea to panelRight
+        panelRight.add(scrollMainPanel, new GridBagConstraints(0, 0, 1, 1, 1, 1,
                 GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL,
                 new Insets(2,2,0,2), 2, 2));
         panelRight.add(labelListen, new GridBagConstraints(0, 2, 1, 1, 1, 1,
                 GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL,
                 new Insets(0,2,100,2), 2, 2));
 
+        // Add to MainPanel layaout
         add(panelLeft, BorderLayout.WEST);
         add(panelRight, BorderLayout.CENTER);
         add(panelTop, BorderLayout.NORTH);
@@ -99,7 +101,7 @@ public class MainPanel extends JPanel{
 //        }
     }
 
-    private void cencelActionPerformed(ActionEvent e){
+    private void stopActionPerformed(ActionEvent e){
 //        buttonCount.setEnabled(true);
 //        buttonCencel.setEnabled(false);
 //        t.cancel(true);
