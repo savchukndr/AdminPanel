@@ -7,37 +7,32 @@ import java.awt.event.ActionListener;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
-public class EmployeeTable extends JFrame{
+public class EmployeeTable extends JTable{
 
-    //MAIN METHOD
-    public static void main(String[] args)
-    {
-
-        EventQueue.invokeLater(() -> {
-            //INITIALIZE JFRAME FORM
-            EmployeeTable form=new EmployeeTable();
-            form.setVisible(true);
-        });
-
-    }
+//    //MAIN METHOD
+//    public static void main(String[] args)
+//    {
+//
+//        EventQueue.invokeLater(() -> {
+//            //INITIALIZE JFRAME FORM
+//            EmployeeTable form=new EmployeeTable();
+//            form.setVisible(true);
+//        });
+//
+//    }
 
     //CONSTRUCTOR
     public EmployeeTable()
     {
-        //the form
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        setBounds(200,200,800,300);
-        setTitle("ProgrammingWizards Channel");
-        getContentPane().setLayout(null);
 
         //ADD SCROLLPANE
-        JScrollPane scroll=new JScrollPane();
-        scroll.setBounds(70,80,600,200);
-        getContentPane().add(scroll);
+//        JScrollPane scroll=new JScrollPane();
+//        scroll.setBounds(70,80,600,200);
+//        add(scroll);
 
         //THE TABLE
-        final JTable table=new JTable();
-        scroll.setViewportView(table);
+//        final JTable table=new JTable();
+//        scroll.setViewportView(table);
 
         //THE MODEL OF OUR TABLE
         DefaultTableModel model=new DefaultTableModel()
@@ -62,7 +57,7 @@ public class EmployeeTable extends JFrame{
         };
 
         //ASSIGN THE MODEL TO TABLE
-        table.setModel(model);
+        setModel(model);
 
         model.addColumn("Select");
         model.addColumn("Name");
@@ -70,7 +65,7 @@ public class EmployeeTable extends JFrame{
         model.addColumn("Password");
 
         //THE ROW
-        for(int i=0;i<=20;i++)
+        for(int i=0;i<=30;i++)
         {
             model.addRow(new Object[0]);
             model.setValueAt(false,i,0);
@@ -88,10 +83,10 @@ public class EmployeeTable extends JFrame{
                 // TODO Auto-generated method stub
 
                 //GET SELECTED ROW
-                for(int i=0;i<table.getRowCount();i++)
+                for(int i=0;i<getRowCount();i++)
                 {
-                    Boolean checked=Boolean.valueOf(table.getValueAt(i, 0).toString());
-                    String col=table.getValueAt(i, 1).toString();
+                    Boolean checked=Boolean.valueOf(getValueAt(i, 0).toString());
+                    String col=getValueAt(i, 1).toString();
 
                     //DISPLAY
                     if(checked)
@@ -105,7 +100,7 @@ public class EmployeeTable extends JFrame{
 
         //ADD BUTTON TO FORM
         btn.setBounds(20,30,130,30);
-        getContentPane().add(btn);
+        add(btn);
     }
 
 }

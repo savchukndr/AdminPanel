@@ -4,6 +4,7 @@ import javax.swing.*;
 import javax.swing.text.DefaultCaret;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import gui_table.*;
 
 /**
  * Created by Andrii Savchuk on 21.04.2018.
@@ -14,6 +15,7 @@ import java.awt.event.ActionEvent;
 public class EmployeePanel extends JPanel{
 
     private static final long serialVersionUID = 4L;
+    private JPanel panelTop;
 
     /**
      * Create the panel.
@@ -24,7 +26,7 @@ public class EmployeePanel extends JPanel{
 
         // Panels
         JPanel panelTopLabel = new JPanel();
-        JPanel panelTop = new JPanel();
+        panelTop = new JPanel(); // EventQueue.invokeLater(() -> panelTop = new JPanel());
         panelTop.setLayout(new GridBagLayout());
         JPanel panelBottom = new JPanel();
         panelBottom.setLayout(new GridBagLayout());
@@ -35,21 +37,43 @@ public class EmployeePanel extends JPanel{
 //        JLabel labelListen = new JLabel();
 //        labelListen.setText("Press \"Start Server\" to start Listening.");
 
-        // Buttons
-        JButton buttonAddEmployee = new JButton("Add Employee");
-        buttonAddEmployee.addActionListener(this::addActionPerformed);
-        JButton buttonDeleteEmployee = new JButton("Delete Employee");
-        buttonDeleteEmployee.addActionListener(this::delteActionPerformed);
+        EmployeeTable table = new EmployeeTable();
+
+        JScrollPane scrollTable=new JScrollPane(table);
+        scrollTable.setBounds(70,80,600,200);
+        scrollTable.setViewportView(table);
+        panelTop.add(scrollTable);
+
+//        EventQueue.invokeLater(() -> {
+//            //INITIALIZE JFRAME FORM
+//            EmployeeTable table=new EmployeeTable();
+//            setVisible(true);
+//        });
+
+//        EventQueue.invokeLater(() -> {
+//                    final EmployeeTable table = new EmployeeTable();
+//                    scroll.setViewportView(table);
+//                });
+
+
+
+
+
+//        // Buttons
+//        JButton buttonAddEmployee = new JButton("Add Employee");
+//        buttonAddEmployee.addActionListener(this::addActionPerformed);
+//        JButton buttonDeleteEmployee = new JButton("Delete Employee");
+//        buttonDeleteEmployee.addActionListener(this::delteActionPerformed);
 
         // Text
-        JTextArea textArea = new JTextArea(20, 40);
-        textArea.setEditable(false);
-
-        // Adding scroll to main Text Area
-        JScrollPane scrollEmployeePanel = new JScrollPane (textArea,
-                JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        DefaultCaret caret = (DefaultCaret) textArea.getCaret();
-        caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
+//        JTextArea textArea = new JTextArea(20, 40);
+//        textArea.setEditable(false);
+//
+//        // Adding scroll to main Text Area
+//        JScrollPane scrollEmployeePanel = new JScrollPane (textArea,
+//                JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+//        DefaultCaret caret = (DefaultCaret) textArea.getCaret();
+//        caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 
 //        panelLeft.add(buttonStartServer, new GridBagConstraints(0, 5, 1, 1, 1, 1,
 //                GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL,
@@ -71,7 +95,7 @@ public class EmployeePanel extends JPanel{
 //        add(panelLeft, BorderLayout.WEST);
 //        add(panelRight, BorderLayout.CENTER);
         add(panelTopLabel, BorderLayout.NORTH);
-
+        add(panelTop, BorderLayout.CENTER);
     }
 
     private void addActionPerformed(ActionEvent e){
