@@ -18,7 +18,10 @@ import utils.*;
 public class MainPanel extends JPanel{
 
     private JTextArea textArea;
+    private JButton buttonStartServer;
+    private JButton buttonStopServer;
     private aTask task;
+    private Server server;
     private ServerSocket socket;
     private static int port = 1993;
 
@@ -47,10 +50,12 @@ public class MainPanel extends JPanel{
         labelListen.setText("Press \"Start Server\" to start Listening.");
 
         // Buttons
-        JButton buttonStartServer = new JButton("Start Server");
+        buttonStartServer = new JButton("Start Server");
         buttonStartServer.addActionListener(this::startActionPerformed);
-        JButton buttonStopServer = new JButton("Stop Server");
+        buttonStartServer.setEnabled(true);
+        buttonStopServer = new JButton("Stop Server");
         buttonStopServer.addActionListener(this::stopActionPerformed);
+        buttonStopServer.setEnabled(false);
 
         // Text
         textArea = new JTextArea();
@@ -86,6 +91,8 @@ public class MainPanel extends JPanel{
     }
 
     private void startActionPerformed(ActionEvent e){
+        buttonStartServer.setEnabled(false);
+        buttonStopServer.setEnabled(true);
         (task = new aTask()).execute();
 
 //        Server server = new Server(1994);
@@ -97,8 +104,9 @@ public class MainPanel extends JPanel{
     }
 
     private void stopActionPerformed(ActionEvent e){
-//        buttonCount.setEnabled(true);
-//        buttonCencel.setEnabled(false);
+        buttonStartServer.setEnabled(true);
+        buttonStopServer.setEnabled(false);
+        task.done();
 //        t.cancel(true);
 //        labelDownload.setText("Downloading is interrupted!");
     }
@@ -109,9 +117,9 @@ public class MainPanel extends JPanel{
         protected Void doInBackground() throws Exception {
             textArea.setText("");
             textArea.setText("Server started.\n");
-            Server server = new Server(textArea);
+            server = new Server(textArea);
             try {
-                server.serverLoop();
+                server.start();
             }catch (IOException e){
                 System.out.println(e.toString());
             }
@@ -124,7 +132,7 @@ public class MainPanel extends JPanel{
 
         @Override
         protected void done(){
-
+            server.stop();
         }
     }
 }
