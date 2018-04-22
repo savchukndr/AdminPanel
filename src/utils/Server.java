@@ -21,39 +21,26 @@ public class Server {
     private Thread thread;
     private JTextArea outputDestination = null;
     private boolean running = true;
-    private int x = 4;
 
-    /**
-     * Constructor
-     * @param outputDestination - textArea object
-     */
-    public Server(JTextArea outputDestination) {
+    public Server(JTextArea outputDestination){
         this.port = 1994;
         this.outputDestination = outputDestination;
     }
 
-    /**
-     * This method starts serwer
-     * @throws IOException - throws socket exceptions
-     * @throws InterruptedException - throws multithreading exceptions
-     */
     public void start() throws IOException, InterruptedException {
         SocketThread socket = new SocketThread();
         thread = new Thread(socket);
         thread.start();
         thread.join();
-        System.out.println(x + 2);
     }
 
-    /**
-     * This method updates textArea object in MainPanel.java file
-     * @param message - message that will be displayed in textArea object
-     * @param destination - textArea object
-     */
-    private synchronized void UpdateServerStatusWindow(String message, JTextArea destination) {
-        try {
+
+    private synchronized void UpdateServerStatusWindow(String message, JTextArea destination){
+        try
+        {
             destination.append(message + "\n");
-        } catch (Exception e) {
+        }
+        catch(Exception e){
             JOptionPane.showMessageDialog(null, "There was an error updating the server     message output window in the TCP Listner!");
             JOptionPane.showMessageDialog(null, e);
 
@@ -61,33 +48,24 @@ public class Server {
 
     }
 
-    /**
-     * This method stops server.
-     */
-    public synchronized void stop() {
+    public synchronized void stop(){
         if (thread == null) return;
-
         running = false;
-        if (serverSocket != null) {
+        if (serverSocket != null){
             try {
                 serverSocket.close();
             } catch (IOException e) {
-                System.out.println(e.toString());
+                e.printStackTrace();
             }
         }
-
-        thread = null;
+            thread = null;
     }
 
-    /**
-     * Create thread making server-client communications
-     * and stops socket listening when server stops.
-     */
-    class SocketThread implements Runnable {
+    class SocketThread implements Runnable{
         @Override
-        public void run() {
+        public void run () {
             running = true;
-            while (running) {
+            while (running){
                 UpdateServerStatusWindow("Waiting for message", outputDestination);
                 try {
                     serverSocket = new ServerSocket(port);
@@ -96,7 +74,7 @@ public class Server {
                     DataInputStream inStream = new DataInputStream(clientSocket.getInputStream());
                     int length = inStream.readInt();
                     String s = "";// read length of incoming message
-                    if (length > 0) {
+                    if(length>0) {
                         byte[] message = new byte[length];
                         inStream.readFully(message, 0, message.length); // read the message
                         s = new String(message);
@@ -116,21 +94,23 @@ public class Server {
                             UpdateServerStatusWindow("login: " + jsonObj.getString("login"), outputDestination);
                             UpdateServerStatusWindow("name: " + jsonObj.getString("name"), outputDestination);
                             UpdateServerStatusWindow("localization: " + jsonObj.getString("localiztion"), outputDestination);
-                            if (jsonObj.getString("image").equals("")) {
+                            if (jsonObj.getString("image").equals("")){
                                 UpdateServerStatusWindow("commente: no comment", outputDestination);
-                            } else {
+                            }else {
                                 UpdateServerStatusWindow("comment: " + jsonObj.getString("comment"), outputDestination);
                             }
-                            if (jsonObj.getString("image").equals("")) {
+                            if (jsonObj.getString("image").equals("")){
                                 UpdateServerStatusWindow("image: no image", outputDestination);
-                            } else {
+                            }else {
                                 UpdateServerStatusWindow("photo path: C:\\test\\yourFile.jpeg", outputDestination);
                             }
                         } catch (JSONException e) {
                             UpdateServerStatusWindow(e.toString(), outputDestination);
                         }
                         out.close();
-                    } catch (IOException e) {
+                    }
+                    catch (IOException e)
+                    {
                         UpdateServerStatusWindow(e.toString(), outputDestination);
                     }
                 } catch (IOException e) {
@@ -139,9 +119,11 @@ public class Server {
                 UpdateServerStatusWindow("", outputDestination);
                 try {
                     serverSocket.close();
+                    try{
                     clientSocket.close();
+                    }catch (NullPointerException ignored){}
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    UpdateServerStatusWindow("Server stopped.", outputDestination);
                 }
             }
         }

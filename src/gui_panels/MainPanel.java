@@ -22,8 +22,6 @@ public class MainPanel extends JPanel{
     private JButton buttonStopServer;
     private aTask task;
     private Server server;
-    private ServerSocket socket;
-    private static int port = 1993;
 
     private static final long serialVersionUID = 4L;
 
@@ -32,8 +30,6 @@ public class MainPanel extends JPanel{
      */
     public MainPanel() throws IOException {
         // Set MainPanel Layout
-        ServerSocket socket = new ServerSocket(port);
-
         setLayout(new BorderLayout());
 
         // Panels
@@ -94,21 +90,12 @@ public class MainPanel extends JPanel{
         buttonStartServer.setEnabled(false);
         buttonStopServer.setEnabled(true);
         (task = new aTask()).execute();
-
-//        Server server = new Server(1994);
-//        try{
-//            server.startServer();
-//        } catch (IOException er) {
-//            er.printStackTrace();
-//        }
     }
 
     private void stopActionPerformed(ActionEvent e){
         buttonStartServer.setEnabled(true);
         buttonStopServer.setEnabled(false);
         task.done();
-//        t.cancel(true);
-//        labelDownload.setText("Downloading is interrupted!");
     }
 
     private class aTask extends SwingWorker<Void, String>{
@@ -123,10 +110,6 @@ public class MainPanel extends JPanel{
             }catch (IOException e){
                 System.out.println(e.toString());
             }
-//            socket = new ServerSocket(port);
-//            Server serverListener = new Server();
-//            serverListener.startServerPrepare(socket, textArea);
-//            serverListener.start();
             return null;
         }
 
