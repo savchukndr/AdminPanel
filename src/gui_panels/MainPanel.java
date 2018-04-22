@@ -4,6 +4,9 @@ import javax.swing.*;
 import javax.swing.text.DefaultCaret;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.io.IOException;
+
+import utils.Server;
 
 /**
  * Created by Andrii Savchuk on 21.04.2018.
@@ -74,6 +77,12 @@ public class MainPanel extends JPanel{
     }
 
     private void startActionPerformed(ActionEvent e){
+        Server server = new Server(1994);
+        try{
+            server.startServer();
+        } catch (IOException er) {
+            er.printStackTrace();
+        }
 //        if (testField.getText().equals("")){
 //            JOptionPane.showMessageDialog(null, "The field is empty!!!\n Do not forget to input amount of raws!");
 //        }else {
