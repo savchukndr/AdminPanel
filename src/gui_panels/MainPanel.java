@@ -5,8 +5,9 @@ import javax.swing.text.DefaultCaret;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
+import java.net.ServerSocket;
 
-import utils.Server;
+import utils.*;
 
 /**
  * Created by Andrii Savchuk on 21.04.2018.
@@ -16,13 +17,20 @@ import utils.Server;
  */
 public class MainPanel extends JPanel{
 
+    private JTextArea textArea;
+    private aTask task;
+    private ServerSocket socket;
+    private static int port = 1993;
+
     private static final long serialVersionUID = 4L;
 
     /**
      * Create the panel.
      */
-    public MainPanel() {
+    public MainPanel() throws IOException {
         // Set MainPanel Layout
+        ServerSocket socket = new ServerSocket(port);
+
         setLayout(new BorderLayout());
 
         // Panels
@@ -45,8 +53,9 @@ public class MainPanel extends JPanel{
         buttonStopServer.addActionListener(this::stopActionPerformed);
 
         // Text
-        JTextArea textArea = new JTextArea(20, 40);
+        textArea = new JTextArea();
         textArea.setEditable(false);
+        textArea.setRows(20);
 
         // Adding scroll to main Text Area
         JScrollPane scrollMainPanel = new JScrollPane (textArea,
@@ -77,36 +86,13 @@ public class MainPanel extends JPanel{
     }
 
     private void startActionPerformed(ActionEvent e){
-        Server server = new Server(1994);
-        try{
-            server.startServer();
-        } catch (IOException er) {
-            er.printStackTrace();
-        }
-//        if (testField.getText().equals("")){
-//            JOptionPane.showMessageDialog(null, "The field is empty!!!\n Do not forget to input amount of raws!");
-//        }else {
-//            if (!testField.getText().matches("^\\d+$")){
-//                JOptionPane.showMessageDialog(null, "Wrong symbols! (Not Integer)");
-//            }else {
-//                amountOfRaws = Integer.parseInt(testField.getText());
-//                (t = new aTask()).execute();
-//                buttonCount.setEnabled(false);
-//                buttonCencel.setEnabled(true);
-//                k = 1;
-//                if (resPGexist) {
-//                    resPGFrame.dispose();
-//                    resPGexist = false;
-//                }
-//                if (resRDExist) {
-//                    resRDFrame.dispose();
-//                    resPGexist = false;
-//                }
-//                if (resRDPGexist) {
-//                    resRDPGFrame.dispose();
-//                    resRDPGexist = false;
-//                }
-//            }
+        (task = new aTask()).execute();
+
+//        Server server = new Server(1994);
+//        try{
+//            server.startServer();
+//        } catch (IOException er) {
+//            er.printStackTrace();
 //        }
     }
 
@@ -115,5 +101,30 @@ public class MainPanel extends JPanel{
 //        buttonCencel.setEnabled(false);
 //        t.cancel(true);
 //        labelDownload.setText("Downloading is interrupted!");
+    }
+
+    private class aTask extends SwingWorker<Void, String>{
+
+        @Override
+        protected Void doInBackground() throws Exception {
+            textArea.setText("");
+            textArea.setText("Server started.\n");
+            Server server = new Server(textArea);
+            try {
+                server.serverLoop();
+            }catch (IOException e){
+                System.out.println(e.toString());
+            }
+//            socket = new ServerSocket(port);
+//            Server serverListener = new Server();
+//            serverListener.startServerPrepare(socket, textArea);
+//            serverListener.start();
+            return null;
+        }
+
+        @Override
+        protected void done(){
+
+        }
     }
 }

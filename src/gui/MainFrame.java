@@ -8,6 +8,7 @@ import main.Main;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 /**
  * Created by Andrii Savchuk on 21.04.2018.
@@ -26,7 +27,11 @@ public class MainFrame {
             String command = e.getActionCommand();
             switch (command){
                 case "Main":
-                    setCurrentPanel(new MainPanel());
+                    try {
+                        setCurrentPanel(new MainPanel());
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
                     break;
                 case "Employees":
                     setCurrentPanel(new EmployeePanel());
@@ -65,7 +70,11 @@ public class MainFrame {
         panel = new JPanel();
         panel.setBounds(0, 72, 784, 489);
         panel.setLayout(null);
-        setCurrentPanel(new MainPanel());
+        try {
+            setCurrentPanel(new MainPanel());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         JButton logoutBtn = new JButton("Log out");
         logoutBtn.setBounds(580, 9, 100, 20);
