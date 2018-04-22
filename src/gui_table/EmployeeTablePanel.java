@@ -35,9 +35,7 @@ public class EmployeeTablePanel extends JPanel{
         table = new JTable();
 
         JScrollPane scrollTable=new JScrollPane(table);
-        scrollTable.setBounds(70,80,600,200);
         scrollTable.setViewportView(table);
-
 
         panelTop.add(scrollTable);
         panelBottom.add(btn);
@@ -74,7 +72,7 @@ public class EmployeeTablePanel extends JPanel{
         model.addColumn("Password");
 
         //THE ROW
-        for(int i=0;i<=30;i++)
+        for(int i=0;i<=10;i++)
         {
             model.addRow(new Object[0]);
             model.setValueAt(false,i,0);
