@@ -20,10 +20,11 @@ public class Server {
     private ServerSocket serverSocket;
     private Thread thread;
     private JTextArea outputDestination = null;
+    private BufferedWriter out = null;
     private boolean running = true;
 
-    public Server(JTextArea outputDestination){
-        this.port = 1994;
+    public Server(JTextArea outputDestination, int port){
+        this.port = port;
         this.outputDestination = outputDestination;
     }
 
@@ -61,58 +62,87 @@ public class Server {
             thread = null;
     }
 
+    private synchronized void jsonHandler(String stringMesssage){
+        try {
+            out = new BufferedWriter(new FileWriter("C:\\test\\test.txt"));
+            try {
+                JSONObject jsonObj = new JSONObject(stringMesssage);
+                if (!Boolean.valueOf(jsonObj.getString("updateUserDb"))){
+                    orderData(jsonObj);
+                } else {
+                    updateSQL(jsonObj);
+                }
+            } catch (JSONException e) {
+                UpdateServerStatusWindow(e.toString(), outputDestination);
+            }
+            out.close();
+        }
+        catch (IOException e)
+        {
+            UpdateServerStatusWindow(e.toString(), outputDestination);
+        }
+    }
+
+    private synchronized void orderData(JSONObject jsonObj){
+        try {
+            if (!jsonObj.getString("image").equals("")) {
+                out.write(jsonObj.getString("image"));
+                byte[] decodedString = new sun.misc.BASE64Decoder().decodeBuffer(jsonObj.getString("image"));
+                File of = new File("C:\\test\\yourFile.jpeg");
+                FileOutputStream osf = new FileOutputStream(of);
+                osf.write(decodedString);
+                osf.flush();
+            }
+            UpdateServerStatusWindow("login: " + jsonObj.getString("login"), outputDestination);
+            UpdateServerStatusWindow("name: " + jsonObj.getString("name"), outputDestination);
+            UpdateServerStatusWindow("localization: " + jsonObj.getString("localiztion"), outputDestination);
+            if (jsonObj.getString("image").equals("")){
+                UpdateServerStatusWindow("commente: no comment", outputDestination);
+            }else {
+                UpdateServerStatusWindow("comment: " + jsonObj.getString("comment"), outputDestination);
+            }
+            if (jsonObj.getString("image").equals("")){
+                UpdateServerStatusWindow("image: no image", outputDestination);
+            }else {
+                UpdateServerStatusWindow("photo path: C:\\test\\yourFile.jpeg", outputDestination);
+            }
+        } catch (JSONException | IOException e) {
+            UpdateServerStatusWindow(e.toString(), outputDestination);
+        }
+    }
+
+    private synchronized void updateSQL(JSONObject jsonObj){
+        //TODO: send data to android device
+        try {
+            UpdateServerStatusWindow(jsonObj.getString("greeting"), outputDestination);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
     class SocketThread implements Runnable{
         @Override
         public void run () {
+            orderDataListener();
+        }
+
+        private void orderDataListener(){
             running = true;
             while (running){
                 UpdateServerStatusWindow("Waiting for message", outputDestination);
                 try {
                     serverSocket = new ServerSocket(port);
                     clientSocket = serverSocket.accept();
-                    UpdateServerStatusWindow("Message received.", outputDestination);
+                    UpdateServerStatusWindow("Message received:", outputDestination);
                     DataInputStream inStream = new DataInputStream(clientSocket.getInputStream());
                     int length = inStream.readInt();
-                    String s = "";// read length of incoming message
+                    String stringMessage = "";// read length of incoming message
                     if(length>0) {
                         byte[] message = new byte[length];
                         inStream.readFully(message, 0, message.length); // read the message
-                        s = new String(message);
+                        stringMessage = new String(message);
                     }
-                    try {
-                        BufferedWriter out = new BufferedWriter(new FileWriter("C:\\test\\test.txt"));
-                        try {
-                            JSONObject jsonObj = new JSONObject(s);
-                            if (!jsonObj.getString("image").equals("")) {
-                                out.write(jsonObj.getString("image"));
-                                byte[] decodedString = new sun.misc.BASE64Decoder().decodeBuffer(jsonObj.getString("image"));
-                                File of = new File("C:\\test\\yourFile.jpeg");
-                                FileOutputStream osf = new FileOutputStream(of);
-                                osf.write(decodedString);
-                                osf.flush();
-                            }
-                            UpdateServerStatusWindow("login: " + jsonObj.getString("login"), outputDestination);
-                            UpdateServerStatusWindow("name: " + jsonObj.getString("name"), outputDestination);
-                            UpdateServerStatusWindow("localization: " + jsonObj.getString("localiztion"), outputDestination);
-                            if (jsonObj.getString("image").equals("")){
-                                UpdateServerStatusWindow("commente: no comment", outputDestination);
-                            }else {
-                                UpdateServerStatusWindow("comment: " + jsonObj.getString("comment"), outputDestination);
-                            }
-                            if (jsonObj.getString("image").equals("")){
-                                UpdateServerStatusWindow("image: no image", outputDestination);
-                            }else {
-                                UpdateServerStatusWindow("photo path: C:\\test\\yourFile.jpeg", outputDestination);
-                            }
-                        } catch (JSONException e) {
-                            UpdateServerStatusWindow(e.toString(), outputDestination);
-                        }
-                        out.close();
-                    }
-                    catch (IOException e)
-                    {
-                        UpdateServerStatusWindow(e.toString(), outputDestination);
-                    }
+                    jsonHandler(stringMessage);
                 } catch (IOException e) {
                     UpdateServerStatusWindow("Server stopped.", outputDestination);
                 }
@@ -120,7 +150,7 @@ public class Server {
                 try {
                     serverSocket.close();
                     try{
-                    clientSocket.close();
+                        clientSocket.close();
                     }catch (NullPointerException ignored){}
                 } catch (IOException e) {
                     UpdateServerStatusWindow("Server stopped.", outputDestination);
