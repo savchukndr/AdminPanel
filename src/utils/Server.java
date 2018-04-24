@@ -7,6 +7,7 @@ import javax.swing.*;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.UnknownHostException;
 
 /**
  * Created by Andrii Savchuk on 22.04.2018.
@@ -22,6 +23,8 @@ public class Server {
     private JTextArea outputDestination = null;
     private BufferedWriter out = null;
     private boolean running = true;
+    private String CLIENT_IP = "";
+    private final int CLIENT_PORT = 1996;
 
     public Server(JTextArea outputDestination, int port){
         this.port = port;
@@ -115,7 +118,15 @@ public class Server {
         //TODO: send data to android device
         try {
             UpdateServerStatusWindow(jsonObj.getString("greeting"), outputDestination);
-        } catch (JSONException e) {
+            UpdateServerStatusWindow("Sending updates on device...", outputDestination);
+            byte[] greetingMessageFromServer = "Greeting from server".getBytes();
+            Socket socket = new Socket(CLIENT_IP, CLIENT_PORT);
+            DataOutputStream outStream = new DataOutputStream(socket.getOutputStream());
+            outStream.writeInt(greetingMessageFromServer.length);
+            outStream.write(greetingMessageFromServer);
+            socket.close();
+            UpdateServerStatusWindow("Updates sent...", outputDestination);
+        } catch (JSONException | IOException e) {
             e.printStackTrace();
         }
     }
@@ -133,6 +144,8 @@ public class Server {
                 try {
                     serverSocket = new ServerSocket(port);
                     clientSocket = serverSocket.accept();
+                    CLIENT_IP = clientSocket.getInetAddress().getHostAddress();
+                    UpdateServerStatusWindow("Client connected on: " + CLIENT_IP, outputDestination);
                     UpdateServerStatusWindow("Message received:", outputDestination);
                     DataInputStream inStream = new DataInputStream(clientSocket.getInputStream());
                     int length = inStream.readInt();
