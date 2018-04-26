@@ -1,11 +1,12 @@
-package gui_table;
+package gui_tables;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+
+import dialog_frames.*;
 
 public class EmployeeTablePanel extends JPanel{
 
@@ -40,7 +41,7 @@ public class EmployeeTablePanel extends JPanel{
         panelTop.add(scrollTable);
         panelBottom.add(btn);
         panelBottom.add(buttonAddEmployee);
-        panelBottom.add(buttonDeleteEmployee);
+//        panelBottom.add(buttonDeleteEmployee);
         //THE MODEL OF OUR TABLE
         DefaultTableModel model=new DefaultTableModel()
         {
@@ -105,6 +106,8 @@ public class EmployeeTablePanel extends JPanel{
     }
 
     private void addActionPerformed(ActionEvent e){
+        AddEmployeeFrame dialogFrame = new AddEmployeeFrame();
+        dialogFrame.show();
     }
 
     private void delteActionPerformed(ActionEvent e){
