@@ -87,6 +87,7 @@ public class AddEmployeeFrame extends JFrame{
     }
 
     private void addActionPerformed(ActionEvent e){
+        //TODO: Add adding new employee
     }
 
     private void cancelActionPerformed(ActionEvent e){

@@ -6,6 +6,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
 
+import redis.clients.jedis.Jedis;
 import utils.*;
 
 /**
@@ -21,6 +22,8 @@ public class MainPanel extends JPanel {
     private JButton buttonStopServer;
     private aTask task;
     private Server server;
+    private RedisServer redisServer;
+    private Jedis jedis;
     private int port = 1994;
 
     private static final long serialVersionUID = 4L;
@@ -103,7 +106,19 @@ public class MainPanel extends JPanel {
         @Override
         protected Void doInBackground() throws Exception {
             textArea.setText("");
-            textArea.setText("Server started.\n");
+            try {
+                jedis = new Jedis("localhost");
+                System.out.println(jedis.ping());
+            }catch (Exception ex) {
+                textArea.setText("Redis server started.\n");
+                redisServer = new RedisServer(textArea);
+                try {
+                    redisServer.start();
+                } catch (IOException e) {
+                    System.out.println(e.toString());
+                }
+            }
+            textArea.append("Server started.\n");
             server = new Server(textArea, port);
             try {
                 server.start();
