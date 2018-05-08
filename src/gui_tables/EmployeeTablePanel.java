@@ -2,15 +2,22 @@ package gui_tables;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.util.*;
+import java.util.List;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
 import dialog_frames.*;
+import redis.clients.jedis.Jedis;
+import utils.RedisUtils;
 
 public class EmployeeTablePanel extends JPanel{
 
     private JTable table;
+    private Jedis jedis;
+    private RedisUtils mapRedisObject;
+    private AddEmployeeFrame dialogFrame;
 
     //CONSTRUCTOR
     public EmployeeTablePanel(){
@@ -42,6 +49,13 @@ public class EmployeeTablePanel extends JPanel{
         panelBottom.add(btn);
         panelBottom.add(buttonAddEmployee);
 //        panelBottom.add(buttonDeleteEmployee);
+
+        jedis = new Jedis("localhost");
+        Set<String> keys = jedis.keys("employee:*");
+        List<String> list = new ArrayList<>(keys);
+        Collections.sort(list);
+        mapRedisObject = new RedisUtils();
+
         //THE MODEL OF OUR TABLE
         DefaultTableModel model=new DefaultTableModel()
         {
@@ -73,13 +87,15 @@ public class EmployeeTablePanel extends JPanel{
         model.addColumn("Password");
 
         //THE ROW
-        for(int i=0;i<=10;i++)
+        for(int i=0;i<=list.size() - 1;i++)
         {
+            Map<String, String> mapOfValues = new HashMap<>();
+            mapOfValues = mapRedisObject.getKeyMap(list.get(i));
             model.addRow(new Object[0]);
             model.setValueAt(false,i,0);
-            model.setValueAt("Name"+(i+1), i, 1);
-            model.setValueAt("Login", i, 2);
-            model.setValueAt("Password", i, 3);
+            model.setValueAt(mapOfValues.get("name"), i, 1);
+            model.setValueAt(mapOfValues.get("login"), i, 2);
+            model.setValueAt(mapOfValues.get("password"), i, 3);
         }
 
         //ADD BUTTON TO FORM
@@ -106,7 +122,7 @@ public class EmployeeTablePanel extends JPanel{
     }
 
     private void addActionPerformed(ActionEvent e){
-        AddEmployeeFrame dialogFrame = new AddEmployeeFrame();
+        dialogFrame = new AddEmployeeFrame(this);
         dialogFrame.show();
     }
 

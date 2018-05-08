@@ -1,13 +1,19 @@
 package dialog_frames;
 
+import main.Main;
+import gui.MainFrame;
+import gui_panels.EmployeePanel;
+import gui_tables.EmployeeTablePanel;
+
 import org.mindrot.jbcrypt.BCrypt;
 import redis.clients.jedis.Jedis;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import javax.swing.*;
 import java.util.HashMap;
 
-import javax.swing.*;
+
 
 /**
  * Created by Andrii Savchuk on 26.04.2018.
@@ -25,9 +31,10 @@ public class AddEmployeeFrame extends JFrame{
     private Jedis jedis;
     private HashMap<String, String> employeeMap;
     private long emplyeeDbSize;
+    private EmployeeTablePanel employeeTablePanel;
 
-    public AddEmployeeFrame(){
-
+    public AddEmployeeFrame(EmployeeTablePanel employeeTablePanel){
+        this.employeeTablePanel = employeeTablePanel;
         jedis = new Jedis("localhost");
 
         //Set AddEmployeeFrame layout
@@ -118,6 +125,12 @@ public class AddEmployeeFrame extends JFrame{
             employeeMap.put("login", loginTextField.getText());
             employeeMap.put("password", hashPassword(passwordTextField.getText()));
             jedis.hmset("employee:" + String.valueOf(emplyeeDbSize + 1), employeeMap);
+            MainFrame mainFrame = Main.getMainFrame();
+            EmployeePanel employeePanel = mainFrame.getEmployeePanel();
+            employeePanel.remove(employeeTablePanel);
+            employeePanel.revalidate();
+            employeePanel.repaint();
+            employeePanel.add(new EmployeeTablePanel());
             this.dispose();
         }
     }

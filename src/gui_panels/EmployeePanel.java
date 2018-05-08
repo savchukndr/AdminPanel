@@ -14,12 +14,18 @@ public class EmployeePanel extends JPanel{
 
     private static final long serialVersionUID = 4L;
     private JPanel panelTop;
+    private EmployeeTablePanel employeeTablePanel;
+
+    public EmployeeTablePanel getEmployeeTablePanel() {
+        return employeeTablePanel;
+    }
 
     /**
      * Create the panel.
+
      */
     public EmployeePanel() {
-        EmployeeTablePanel employeeTablePanel = new EmployeeTablePanel();
+        employeeTablePanel = new EmployeeTablePanel();
         add(employeeTablePanel);
 //        // Set MainPanel Layout
 //        setLayout(new BorderLayout());
@@ -97,6 +103,4 @@ public class EmployeePanel extends JPanel{
 //        add(panelTopLabel, BorderLayout.NORTH);
 //        add(panelTop, BorderLayout.CENTER);
     }
-
-
 }

@@ -13,6 +13,10 @@ public class Main {
     private static MainFrame mainFrame;
 
 
+    public static MainFrame getMainFrame() {
+        return mainFrame;
+    }
+
     public static void main(String args[]){
         Main.goToMainFrame();
     }

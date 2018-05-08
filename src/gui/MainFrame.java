@@ -21,6 +21,11 @@ public class MainFrame {
     private JFrame frame;
     private JPanel panel;
     private ActionListener actionListener;
+    private EmployeePanel employeePanel;
+
+    public EmployeePanel getEmployeePanel() {
+        return employeePanel;
+    }
 
     public MainFrame(){
         actionListener = e -> {
@@ -34,7 +39,8 @@ public class MainFrame {
                     }
                     break;
                 case "Employees":
-                    setCurrentPanel(new EmployeePanel());
+                    employeePanel = new EmployeePanel();
+                    setCurrentPanel(employeePanel);
                     break;
                 case "Log out":
                     Main.logout();
