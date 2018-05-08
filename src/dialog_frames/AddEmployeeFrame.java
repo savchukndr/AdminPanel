@@ -1,7 +1,11 @@
 package dialog_frames;
 
+import org.mindrot.jbcrypt.BCrypt;
+import redis.clients.jedis.Jedis;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.util.HashMap;
 
 import javax.swing.*;
 
@@ -18,8 +22,13 @@ public class AddEmployeeFrame extends JFrame{
     private JLabel loginLabel;
     private JLabel nameLabel;
     private JLabel passwordLabel;
+    private Jedis jedis;
+    private HashMap<String, String> employeeMap;
+    private long emplyeeDbSize;
 
     public AddEmployeeFrame(){
+
+        jedis = new Jedis("localhost");
 
         //Set AddEmployeeFrame layout
 //        setSize(400,300);
@@ -86,8 +95,31 @@ public class AddEmployeeFrame extends JFrame{
         pack();
     }
 
+    private String hashPassword(String plainTextPassword){
+        return BCrypt.hashpw(plainTextPassword, BCrypt.gensalt());
+    }
+
+    private String checkPass(String plainPassword, String hashedPassword) {
+        if (BCrypt.checkpw(plainPassword, hashedPassword))
+            return "The password matches.";
+        else
+            return "The password does not match.";
+    }
+
     private void addActionPerformed(ActionEvent e){
-        //TODO: Add adding new employee
+        if (nameTextField.getText().equals("")
+                || loginTextField.getText().equals("")
+                || passwordTextField.getText().equals("")){
+            JOptionPane.showMessageDialog(null, "Some fields are empty!!!");
+        }else {
+            employeeMap = new HashMap<>();
+            emplyeeDbSize = jedis.dbSize();
+            employeeMap.put("name", nameTextField.getText());
+            employeeMap.put("login", loginTextField.getText());
+            employeeMap.put("password", hashPassword(passwordTextField.getText()));
+            jedis.hmset("employee:" + String.valueOf(emplyeeDbSize + 1), employeeMap);
+            this.dispose();
+        }
     }
 
     private void cancelActionPerformed(ActionEvent e){
