@@ -124,7 +124,7 @@ public class AddEmployeeFrame extends JFrame{
             employeeMap.put("name", nameTextField.getText());
             employeeMap.put("login", loginTextField.getText());
             employeeMap.put("password", hashPassword(passwordTextField.getText()));
-            jedis.hmset("employee:" + String.valueOf(emplyeeDbSize + 1), employeeMap);
+            jedis.hmset("employee:" + String.valueOf(emplyeeDbSize), employeeMap);
             MainFrame mainFrame = Main.getMainFrame();
             EmployeePanel employeePanel = mainFrame.getEmployeePanel();
             employeePanel.remove(employeeTablePanel);

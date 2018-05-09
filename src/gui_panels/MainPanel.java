@@ -25,6 +25,11 @@ public class MainPanel extends JPanel {
     private RedisServer redisServer;
     private Jedis jedis;
     private int port = 1994;
+    private static boolean redisIsStarted = false;
+
+    public static boolean isRedisIsStarted() {
+        return redisIsStarted;
+    }
 
     private static final long serialVersionUID = 4L;
 
@@ -109,11 +114,13 @@ public class MainPanel extends JPanel {
             try {
                 jedis = new Jedis("localhost");
                 System.out.println(jedis.ping());
+                redisIsStarted = true;
             }catch (Exception ex) {
                 textArea.setText("Redis server started.\n");
                 redisServer = new RedisServer(textArea);
                 try {
                     redisServer.start();
+                    redisIsStarted = true;
                 } catch (IOException e) {
                     System.out.println(e.toString());
                 }

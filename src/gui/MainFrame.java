@@ -3,6 +3,7 @@ package gui;
 import javax.swing.*;
 
 import gui_panels.*;
+import gui_panels.MainPanel;
 import main.Main;
 
 import java.awt.SystemColor;
@@ -22,6 +23,7 @@ public class MainFrame {
     private JPanel panel;
     private ActionListener actionListener;
     private EmployeePanel employeePanel;
+    private MainPanel mainPanel;
 
     public EmployeePanel getEmployeePanel() {
         return employeePanel;
@@ -33,14 +35,24 @@ public class MainFrame {
             switch (command){
                 case "Main":
                     try {
-                        setCurrentPanel(new MainPanel());
+                        if (mainPanel == null) {
+                            mainPanel = new MainPanel();
+                            setCurrentPanel(mainPanel);
+                        }else {
+                            setCurrentPanel(mainPanel);
+                        }
                     } catch (IOException e1) {
                         e1.printStackTrace();
                     }
                     break;
                 case "Employees":
+                    boolean redisIsStarted = MainPanel.isRedisIsStarted();
+                    if (redisIsStarted){
                     employeePanel = new EmployeePanel();
                     setCurrentPanel(employeePanel);
+                    }else{
+                        JOptionPane.showMessageDialog(null, "Start Server before check Employee Panel.");
+                    }
                     break;
                 case "Log out":
                     Main.logout();

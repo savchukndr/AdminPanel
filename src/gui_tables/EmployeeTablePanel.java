@@ -18,6 +18,7 @@ public class EmployeeTablePanel extends JPanel{
     private Jedis jedis;
     private RedisUtils mapRedisObject;
     private AddEmployeeFrame dialogFrame;
+    private Map<String, String> mapOfValues;
 
     //CONSTRUCTOR
     public EmployeeTablePanel(){
@@ -36,9 +37,7 @@ public class EmployeeTablePanel extends JPanel{
         JButton buttonAddEmployee = new JButton("Add Employee");
         buttonAddEmployee.addActionListener(this::addActionPerformed);
         JButton buttonDeleteEmployee = new JButton("Delete Employee");
-        buttonDeleteEmployee.addActionListener(this::delteActionPerformed);
-        JButton btn=new JButton("Get Selected");
-        btn.addActionListener(this::selectActionPerformed);
+        buttonDeleteEmployee.addActionListener(this::deleteActionPerformed);
 
         table = new JTable();
 
@@ -46,7 +45,7 @@ public class EmployeeTablePanel extends JPanel{
         scrollTable.setViewportView(table);
 
         panelTop.add(scrollTable);
-        panelBottom.add(btn);
+        panelBottom.add(buttonDeleteEmployee);
         panelBottom.add(buttonAddEmployee);
 //        panelBottom.add(buttonDeleteEmployee);
 
@@ -71,6 +70,8 @@ public class EmployeeTablePanel extends JPanel{
                         return String.class;
                     case 3:
                         return String.class;
+                    case 4:
+                        return String.class;
 
                     default:
                         return String.class;
@@ -82,6 +83,7 @@ public class EmployeeTablePanel extends JPanel{
         table.setModel(model);
 
         model.addColumn("Select");
+        model.addColumn("Employee ID");
         model.addColumn("Name");
         model.addColumn("Login");
         model.addColumn("Password");
@@ -89,34 +91,35 @@ public class EmployeeTablePanel extends JPanel{
         //THE ROW
         for(int i=0;i<=list.size() - 1;i++)
         {
-            Map<String, String> mapOfValues = new HashMap<>();
             mapOfValues = mapRedisObject.getKeyMap(list.get(i));
             model.addRow(new Object[0]);
             model.setValueAt(false,i,0);
-            model.setValueAt(mapOfValues.get("name"), i, 1);
-            model.setValueAt(mapOfValues.get("login"), i, 2);
-            model.setValueAt(mapOfValues.get("password"), i, 3);
+            model.setValueAt(list.get(i), i, 1);
+            model.setValueAt(mapOfValues.get("name"), i, 2);
+            model.setValueAt(mapOfValues.get("login"), i, 3);
+            model.setValueAt(mapOfValues.get("password"), i, 4);
         }
 
         //ADD BUTTON TO FORM
-        btn.setBounds(20,30,130,30);
+        buttonDeleteEmployee.setBounds(20,30,130,30);
         add(panelTop, BorderLayout.CENTER);
         add(panelBottom, BorderLayout.SOUTH);
     }
 
-    private void selectActionPerformed(ActionEvent e){
+    private void deleteActionPerformed(ActionEvent e){
         // TODO Auto-generated method stub
 
         //GET SELECTED ROW
         for(int i=0;i<table.getRowCount();i++)
         {
             Boolean checked=Boolean.valueOf(table.getValueAt(i, 0).toString());
-            String col=table.getValueAt(i, 1).toString();
+            String employeeId = table.getValueAt(i, 1).toString();
 
             //DISPLAY
             if(checked)
             {
-                JOptionPane.showMessageDialog(null, col);
+                JOptionPane.showMessageDialog(null, employeeId);
+                jedis.del(employeeId);
             }
         }
     }
@@ -125,8 +128,4 @@ public class EmployeeTablePanel extends JPanel{
         dialogFrame = new AddEmployeeFrame(this);
         dialogFrame.show();
     }
-
-    private void delteActionPerformed(ActionEvent e){
-    }
-
 }

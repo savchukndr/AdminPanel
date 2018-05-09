@@ -13,12 +13,7 @@ import gui_tables.*;
 public class EmployeePanel extends JPanel{
 
     private static final long serialVersionUID = 4L;
-    private JPanel panelTop;
     private EmployeeTablePanel employeeTablePanel;
-
-    public EmployeeTablePanel getEmployeeTablePanel() {
-        return employeeTablePanel;
-    }
 
     /**
      * Create the panel.
