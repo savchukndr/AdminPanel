@@ -11,8 +11,8 @@ import redis.clients.jedis.Jedis;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import javax.swing.*;
-import java.util.HashMap;
-
+import java.util.*;
+import java.util.List;
 
 
 /**
@@ -124,7 +124,7 @@ public class AddEmployeeFrame extends JFrame{
             employeeMap.put("name", nameTextField.getText());
             employeeMap.put("login", loginTextField.getText());
             employeeMap.put("password", hashPassword(passwordTextField.getText()));
-            jedis.hmset("employee:" + String.valueOf(emplyeeDbSize), employeeMap);
+            addKeyToEmployeeMap();
             MainFrame mainFrame = Main.getMainFrame();
             EmployeePanel employeePanel = mainFrame.getEmployeePanel();
             employeePanel.remove(employeeTablePanel);
@@ -132,6 +132,30 @@ public class AddEmployeeFrame extends JFrame{
             employeePanel.repaint();
             employeePanel.add(new EmployeeTablePanel());
             this.dispose();
+        }
+    }
+
+    private void addKeyToEmployeeMap(){
+        List<Integer> temp = new ArrayList<>();
+        jedis = new Jedis("localhost");
+        Set<String> keys = jedis.keys("employee:*");
+        List<String> list = new ArrayList<>(keys);
+        Collections.sort(list);
+        if(list.isEmpty()){
+            jedis.hmset("employee:" + String.valueOf(0), employeeMap);
+        } else {
+            for (String key : list) {
+                temp.add(Character.getNumericValue(key.charAt(key.length() - 1)));
+            }
+            int i = 0;
+            while (true) {
+                if (!temp.contains(i)) {
+                    jedis.hmset("employee:" + String.valueOf(i), employeeMap);
+                    break;
+                } else {
+                    i++;
+                }
+            }
         }
     }
 

@@ -34,16 +34,7 @@ public class MainFrame {
             String command = e.getActionCommand();
             switch (command){
                 case "Main":
-                    try {
-                        if (mainPanel == null) {
-                            mainPanel = new MainPanel();
-                            setCurrentPanel(mainPanel);
-                        }else {
-                            setCurrentPanel(mainPanel);
-                        }
-                    } catch (IOException e1) {
-                        e1.printStackTrace();
-                    }
+                    setCurrentPanel(mainPanel);
                     break;
                 case "Employees":
                     boolean redisIsStarted = MainPanel.isRedisIsStarted();
@@ -78,6 +69,7 @@ public class MainFrame {
 //        buttonMain.setBackground(SystemColor.menu);
         buttonMain.setBounds(10, 10, 100, 20);
         buttonMain.addActionListener(actionListener);
+//        buttonMain.setEnabled(false);
         frame.getContentPane().add(buttonMain);
 
         JButton buttonEmployees = new JButton("Employees");
@@ -89,7 +81,8 @@ public class MainFrame {
         panel.setBounds(0, 72, 784, 489);
         panel.setLayout(null);
         try {
-            setCurrentPanel(new MainPanel());
+            mainPanel = new MainPanel();
+            setCurrentPanel(mainPanel);
         } catch (IOException e) {
             e.printStackTrace();
         }

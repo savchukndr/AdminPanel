@@ -9,6 +9,9 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
 import dialog_frames.*;
+import gui.MainFrame;
+import gui_panels.EmployeePanel;
+import main.Main;
 import redis.clients.jedis.Jedis;
 import utils.RedisUtils;
 
@@ -118,10 +121,16 @@ public class EmployeeTablePanel extends JPanel{
             //DISPLAY
             if(checked)
             {
-                JOptionPane.showMessageDialog(null, employeeId);
                 jedis.del(employeeId);
+                JOptionPane.showMessageDialog(null, "Deleted: " + employeeId);
             }
         }
+        MainFrame mainFrame = Main.getMainFrame();
+        EmployeePanel employeePanel = mainFrame.getEmployeePanel();
+        employeePanel.remove(this);
+        employeePanel.revalidate();
+        employeePanel.repaint();
+        employeePanel.add(new EmployeeTablePanel());
     }
 
     private void addActionPerformed(ActionEvent e){
