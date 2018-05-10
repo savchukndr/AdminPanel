@@ -1,7 +1,11 @@
 package utils;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import redis.clients.jedis.Jedis;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -22,20 +26,23 @@ public class RedisUtils {
         return jedis.hgetAll(key);
     }
 
-//    public static void main(String args[]){
-////        Jedis jedis = new Jedis("localhost");
-////
-////        System.out.println(jedis.hgetAll("employee:4"));
-//        Jedis jedis = new Jedis("localhost");
-//        Set<String> keys = jedis.keys("employee:*");
-//        List<String> list = new ArrayList<>(keys);
-//        Collections.sort(list);
-//        HashMap<Integer, String> listWithId= new HashMap<>();
-//        int i = 0;
-//        while(i != list.size()){
-//            listWithId.put(i, list.get(i));
-//            i++;
-//        }
-//        System.out.println(listWithId);
-//    }
+    public List<String> getKeyList(){
+        Set<String> keys = jedis.keys("employee:*");
+        List<String> list = new ArrayList<>(keys);
+        Collections.sort(list);
+        return list;
+    }
+
+    JSONObject generateJsonObject(List<String> keyList){
+        JSONObject json = new JSONObject();
+        for(int i=0;i<=keyList.size() - 1;i++) {
+            Map<String, String> mapOfValues = getKeyMap(keyList.get(i));
+            try {
+                json.put(keyList.get(i), mapOfValues);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return json;
+    }
 }

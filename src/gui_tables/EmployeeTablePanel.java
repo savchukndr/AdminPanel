@@ -22,6 +22,7 @@ public class EmployeeTablePanel extends JPanel{
     private RedisUtils mapRedisObject;
     private AddEmployeeFrame dialogFrame;
     private Map<String, String> mapOfValues;
+    private List<String> keyList;
 
     //CONSTRUCTOR
     public EmployeeTablePanel(){
@@ -53,10 +54,9 @@ public class EmployeeTablePanel extends JPanel{
 //        panelBottom.add(buttonDeleteEmployee);
 
         jedis = new Jedis("localhost");
-        Set<String> keys = jedis.keys("employee:*");
-        List<String> list = new ArrayList<>(keys);
-        Collections.sort(list);
         mapRedisObject = new RedisUtils();
+        keyList = mapRedisObject.getKeyList();
+
 
         //THE MODEL OF OUR TABLE
         DefaultTableModel model=new DefaultTableModel()
@@ -84,7 +84,6 @@ public class EmployeeTablePanel extends JPanel{
 
         //ASSIGN THE MODEL TO TABLE
         table.setModel(model);
-
         model.addColumn("Select");
         model.addColumn("Employee ID");
         model.addColumn("Name");
@@ -92,12 +91,12 @@ public class EmployeeTablePanel extends JPanel{
         model.addColumn("Password");
 
         //THE ROW
-        for(int i=0;i<=list.size() - 1;i++)
+        for(int i=0;i<=keyList.size() - 1;i++)
         {
-            mapOfValues = mapRedisObject.getKeyMap(list.get(i));
+            mapOfValues = mapRedisObject.getKeyMap(keyList.get(i));
             model.addRow(new Object[0]);
             model.setValueAt(false,i,0);
-            model.setValueAt(list.get(i), i, 1);
+            model.setValueAt(keyList.get(i), i, 1);
             model.setValueAt(mapOfValues.get("name"), i, 2);
             model.setValueAt(mapOfValues.get("login"), i, 3);
             model.setValueAt(mapOfValues.get("password"), i, 4);

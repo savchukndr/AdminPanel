@@ -2,12 +2,13 @@ package utils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import redis.clients.jedis.Jedis;
 
 import javax.swing.*;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.UnknownHostException;
+import java.util.List;
 
 /**
  * Created by Andrii Savchuk on 22.04.2018.
@@ -25,6 +26,9 @@ public class Server {
     private boolean running = true;
     private String CLIENT_IP = "";
     private final int CLIENT_PORT = 1996;
+    private Jedis jedis;
+    private RedisUtils mapRedisObject;
+    private List<String> keyList;
 
     public Server(JTextArea outputDestination, int port){
         this.port = port;
@@ -115,20 +119,31 @@ public class Server {
     }
 
     private synchronized void updateSQL(JSONObject jsonObj){
-        //TODO: send data to android device
         try {
             UpdateServerStatusWindow(jsonObj.getString("greeting"), outputDestination);
             UpdateServerStatusWindow("Sending updates on device...", outputDestination);
-            byte[] greetingMessageFromServer = "Greeting from server".getBytes();
-            Socket socket = new Socket(CLIENT_IP, CLIENT_PORT);
-            DataOutputStream outStream = new DataOutputStream(socket.getOutputStream());
-            outStream.writeInt(greetingMessageFromServer.length);
-            outStream.write(greetingMessageFromServer);
-            socket.close();
+            String jsonSTR = createRedisdbMessage().toString();
+            byte[] jsonByteArr = jsonSTR.getBytes();
+            try {
+                Socket socket = new Socket(CLIENT_IP, CLIENT_PORT);
+                DataOutputStream outStream = new DataOutputStream(socket.getOutputStream());
+                outStream.writeInt(jsonByteArr.length);
+                outStream.write(jsonByteArr);
+                socket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             UpdateServerStatusWindow("Updates sent...", outputDestination);
-        } catch (JSONException | IOException e) {
+        } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    private JSONObject createRedisdbMessage(){
+        jedis = new Jedis("localhost");
+        mapRedisObject = new RedisUtils();
+        keyList = mapRedisObject.getKeyList();
+        return mapRedisObject.generateJsonObject(keyList);
     }
 
     class SocketThread implements Runnable{
