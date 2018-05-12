@@ -7,6 +7,7 @@ import gui_tables.EmployeeTablePanel;
 
 import org.mindrot.jbcrypt.BCrypt;
 import redis.clients.jedis.Jedis;
+import utils.AESCrypt;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -24,9 +25,11 @@ import java.util.List;
 public class AddEmployeeFrame extends JFrame{
     private JTextField loginTextField;
     private JTextField nameTextField;
+    private JTextField surnameTextField;
     private JTextField passwordTextField;
     private JLabel loginLabel;
     private JLabel nameLabel;
+    private JLabel surnameLabel;
     private JLabel passwordLabel;
     private Jedis jedis;
     private HashMap<String, String> employeeMap;
@@ -50,6 +53,8 @@ public class AddEmployeeFrame extends JFrame{
         loginLabel.setText("Login:");
         nameLabel = new JLabel();
         nameLabel.setText("Name:");
+        surnameLabel = new JLabel();
+        surnameLabel.setText("Surname:");
         passwordLabel = new JLabel();
         passwordLabel.setText("Password:");
 
@@ -57,6 +62,7 @@ public class AddEmployeeFrame extends JFrame{
         loginTextField = new JTextField();
         loginTextField.setPreferredSize( new Dimension( 200, 20) );
         nameTextField = new JTextField();
+        surnameTextField = new JTextField();
         passwordTextField = new JTextField();
 
         //Buttons
@@ -73,7 +79,10 @@ public class AddEmployeeFrame extends JFrame{
         add(nameLabel, new GridBagConstraints(0, 1, 1, 1, 1, 1,
                 GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL,
                 new Insets(2,2,2,2), 2, 2));
-        add(passwordLabel, new GridBagConstraints(0, 2, 1, 1, 1, 1,
+        add(surnameLabel, new GridBagConstraints(0, 2, 1, 1, 1, 1,
+                GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL,
+                new Insets(2,2,2,2), 2, 2));
+        add(passwordLabel, new GridBagConstraints(0, 3, 1, 1, 1, 1,
                 GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL,
                 new Insets(2,2,2,2), 2, 2));
 
@@ -83,7 +92,10 @@ public class AddEmployeeFrame extends JFrame{
         add(nameTextField, new GridBagConstraints(1, 1, 1, 1, 1, 1,
                 GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL,
                 new Insets(2,2,2,2), 2, 2));
-        add(passwordTextField, new GridBagConstraints(1, 2, 1, 1, 1, 1,
+        add(surnameTextField, new GridBagConstraints(1, 2, 1, 1, 1, 1,
+                GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL,
+                new Insets(2,2,2,2), 2, 2));
+        add(passwordTextField, new GridBagConstraints(1, 3, 1, 1, 1, 1,
                 GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL,
                 new Insets(2,2,2,2), 2, 2));
 
@@ -94,7 +106,7 @@ public class AddEmployeeFrame extends JFrame{
                 GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL,
                 new Insets(2,2,2,2), 2, 2));
 
-        add(panelLeft, new GridBagConstraints(1, 3, 1, 1, 1, 1,
+        add(panelLeft, new GridBagConstraints(1, 4, 1, 1, 1, 1,
                 GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL,
                 new Insets(2,2,2,2), 2, 2));
 
@@ -102,16 +114,16 @@ public class AddEmployeeFrame extends JFrame{
         pack();
     }
 
-    private String hashPassword(String plainTextPassword){
-        return BCrypt.hashpw(plainTextPassword, BCrypt.gensalt());
-    }
-
-    private String checkPass(String plainPassword, String hashedPassword) {
-        if (BCrypt.checkpw(plainPassword, hashedPassword))
-            return "The password matches.";
-        else
-            return "The password does not match.";
-    }
+//    private String hashPassword(String plainTextPassword){
+//        return BCrypt.hashpw(plainTextPassword, BCrypt.gensalt());
+//    }
+//
+//    private String checkPass(String plainPassword, String hashedPassword) {
+//        if (BCrypt.checkpw(plainPassword, hashedPassword))
+//            return "The password matches.";
+//        else
+//            return "The password does not match.";
+//    }
 
     private void addActionPerformed(ActionEvent e){
         if (nameTextField.getText().equals("")
@@ -122,8 +134,14 @@ public class AddEmployeeFrame extends JFrame{
             employeeMap = new HashMap<>();
             emplyeeDbSize = jedis.dbSize();
             employeeMap.put("name", nameTextField.getText());
+            employeeMap.put("surname", surnameTextField.getText());
             employeeMap.put("login", loginTextField.getText());
-            employeeMap.put("password", hashPassword(passwordTextField.getText()));
+            try {
+                employeeMap.put("password", AESCrypt.encrypt(passwordTextField.getText()));
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
+//            employeeMap.put("password", passwordTextField.getText());
             addKeyToEmployeeMap();
             MainFrame mainFrame = Main.getMainFrame();
             EmployeePanel employeePanel = mainFrame.getEmployeePanel();

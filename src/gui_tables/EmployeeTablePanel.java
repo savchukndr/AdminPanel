@@ -75,6 +75,8 @@ public class EmployeeTablePanel extends JPanel{
                         return String.class;
                     case 4:
                         return String.class;
+                    case 5:
+                        return String.class;
 
                     default:
                         return String.class;
@@ -87,6 +89,7 @@ public class EmployeeTablePanel extends JPanel{
         model.addColumn("Select");
         model.addColumn("Employee ID");
         model.addColumn("Name");
+        model.addColumn("Surname");
         model.addColumn("Login");
         model.addColumn("Password");
 
@@ -98,8 +101,9 @@ public class EmployeeTablePanel extends JPanel{
             model.setValueAt(false,i,0);
             model.setValueAt(keyList.get(i), i, 1);
             model.setValueAt(mapOfValues.get("name"), i, 2);
-            model.setValueAt(mapOfValues.get("login"), i, 3);
-            model.setValueAt(mapOfValues.get("password"), i, 4);
+            model.setValueAt(mapOfValues.get("surname"), i, 3);
+            model.setValueAt(mapOfValues.get("login"), i, 4);
+            model.setValueAt(mapOfValues.get("password"), i, 5);
         }
 
         //ADD BUTTON TO FORM
