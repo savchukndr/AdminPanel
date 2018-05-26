@@ -102,9 +102,9 @@ public class Server {
             }
             UpdateServerStatusWindow("login: " + jsonObj.getString("login"), outputDestination);
             UpdateServerStatusWindow("name: " + jsonObj.getString("name"), outputDestination);
-            UpdateServerStatusWindow("localization: " + jsonObj.getString("localiztion"), outputDestination);
+            UpdateServerStatusWindow("localization: " + jsonObj.getString("localization"), outputDestination);
             if (jsonObj.getString("image").equals("")){
-                UpdateServerStatusWindow("commente: no comment", outputDestination);
+                UpdateServerStatusWindow("comment: no comment", outputDestination);
             }else {
                 UpdateServerStatusWindow("comment: " + jsonObj.getString("comment"), outputDestination);
             }
@@ -113,6 +113,9 @@ public class Server {
             }else {
                 UpdateServerStatusWindow("photo path: C:\\test\\yourFile.jpeg", outputDestination);
             }
+            UpdateServerStatusWindow("Chain Store: " + jsonObj.getString("chainStore"), outputDestination);
+            UpdateServerStatusWindow("Store: " + jsonObj.getString("store"), outputDestination);
+            UpdateServerStatusWindow("Shelf amount: " + jsonObj.getString("shelf"), outputDestination);
         } catch (JSONException | IOException e) {
             UpdateServerStatusWindow(e.toString(), outputDestination);
         }
