@@ -23,10 +23,15 @@ public class MainFrame {
     private JPanel panel;
     private ActionListener actionListener;
     private EmployeePanel employeePanel;
+    private StorePanel storePanel;
     private MainPanel mainPanel;
 
     public EmployeePanel getEmployeePanel() {
         return employeePanel;
+    }
+
+    public StorePanel getStorePanel() {
+        return storePanel;
     }
 
     public MainFrame(){
@@ -44,6 +49,15 @@ public class MainFrame {
                     }else{
                         JOptionPane.showMessageDialog(null, "Start Server before check Employee Panel.");
                     }
+                    break;
+                case "Stores":
+//                    boolean redisIsStarted = MainPanel.isRedisIsStarted();
+//                    if (redisIsStarted){
+                        storePanel = new StorePanel();
+                        setCurrentPanel(storePanel);
+//                    }else{
+//                        JOptionPane.showMessageDialog(null, "Start Server before check Employee Panel.");
+//                    }
                     break;
                 case "Log out":
                     Main.logout();
@@ -77,6 +91,13 @@ public class MainFrame {
         buttonEmployees.setBounds(105, 10, 100, 20);
         buttonEmployees.addActionListener(actionListener);
         frame.getContentPane().add(buttonEmployees);
+
+        JButton buttonStores = new JButton("Stores");
+//        buttonMain.setBackground(SystemColor.menu);
+        buttonStores.setBounds(200, 10, 100, 20);
+        buttonStores.addActionListener(actionListener);
+        frame.getContentPane().add(buttonStores);
+
         panel = new JPanel();
         panel.setBounds(0, 72, 784, 489);
         panel.setLayout(null);

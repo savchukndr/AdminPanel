@@ -116,6 +116,7 @@ public class Server {
             UpdateServerStatusWindow("Chain Store: " + jsonObj.getString("chainStore"), outputDestination);
             UpdateServerStatusWindow("Store: " + jsonObj.getString("store"), outputDestination);
             UpdateServerStatusWindow("Shelf amount: " + jsonObj.getString("shelf"), outputDestination);
+            UpdateServerStatusWindow("Time stamp: " + jsonObj.getString("date"), outputDestination);
         } catch (JSONException | IOException e) {
             UpdateServerStatusWindow(e.toString(), outputDestination);
         }

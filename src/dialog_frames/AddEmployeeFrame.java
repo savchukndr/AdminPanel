@@ -114,17 +114,6 @@ public class AddEmployeeFrame extends JFrame{
         pack();
     }
 
-//    private String hashPassword(String plainTextPassword){
-//        return BCrypt.hashpw(plainTextPassword, BCrypt.gensalt());
-//    }
-//
-//    private String checkPass(String plainPassword, String hashedPassword) {
-//        if (BCrypt.checkpw(plainPassword, hashedPassword))
-//            return "The password matches.";
-//        else
-//            return "The password does not match.";
-//    }
-
     private void addActionPerformed(ActionEvent e){
         if (nameTextField.getText().equals("")
                 || loginTextField.getText().equals("")
