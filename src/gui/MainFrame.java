@@ -24,6 +24,7 @@ public class MainFrame {
     private ActionListener actionListener;
     private EmployeePanel employeePanel;
     private StorePanel storePanel;
+    private ChainPanel chainPanel;
     private MainPanel mainPanel;
 
     public EmployeePanel getEmployeePanel() {
@@ -32,6 +33,10 @@ public class MainFrame {
 
     public StorePanel getStorePanel() {
         return storePanel;
+    }
+
+    public ChainPanel getChainPanel() {
+        return chainPanel;
     }
 
     public MainFrame(){
@@ -49,6 +54,15 @@ public class MainFrame {
                     }else{
                         JOptionPane.showMessageDialog(null, "Start Server before check Employee Panel.");
                     }
+                    break;
+                case "Chains":
+//                    boolean redisIsStarted = MainPanel.isRedisIsStarted();
+//                    if (redisIsStarted){
+                    chainPanel = new ChainPanel();
+                    setCurrentPanel(chainPanel);
+//                    }else{
+//                        JOptionPane.showMessageDialog(null, "Start Server before check Employee Panel.");
+//                    }
                     break;
                 case "Stores":
 //                    boolean redisIsStarted = MainPanel.isRedisIsStarted();
@@ -92,9 +106,15 @@ public class MainFrame {
         buttonEmployees.addActionListener(actionListener);
         frame.getContentPane().add(buttonEmployees);
 
+        JButton buttonChains = new JButton("Chains");
+//        buttonMain.setBackground(SystemColor.menu);
+        buttonChains.setBounds(200, 10, 100, 20);
+        buttonChains.addActionListener(actionListener);
+        frame.getContentPane().add(buttonChains);
+
         JButton buttonStores = new JButton("Stores");
 //        buttonMain.setBackground(SystemColor.menu);
-        buttonStores.setBounds(200, 10, 100, 20);
+        buttonStores.setBounds(295, 10, 100, 20);
         buttonStores.addActionListener(actionListener);
         frame.getContentPane().add(buttonStores);
 

@@ -3,6 +3,7 @@
     <properties maven-id="de.svenkubiak:jBCrypt:0.4.1" />
     <CLASSES>
       <root url="jar://$MAVEN_REPOSITORY$/de/svenkubiak/jBCrypt/0.4.1/jBCrypt-0.4.1.jar!/" />
+      <root url="jar://$USER_HOME$/Documents/jars/postgresql-9.4.1212.jre6.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

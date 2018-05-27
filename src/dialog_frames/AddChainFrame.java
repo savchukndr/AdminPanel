@@ -1,5 +1,6 @@
 package dialog_frames;
 
+import database.ChainDbTable;
 import main.Main;
 import gui.MainFrame;
 import gui_panels.ChainPanel;
@@ -12,6 +13,8 @@ import utils.AESCrypt;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import javax.swing.*;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.*;
 import java.util.List;
 
@@ -26,6 +29,7 @@ public class AddChainFrame extends JFrame{
     private JTextField chainTextField;
     private JLabel chainLabel;
     private ChainTablePanel chainTablePanel;
+    private ChainDbTable chainDbTable;
 
     public AddChainFrame(ChainTablePanel chainTablePanel){
         this.chainTablePanel = chainTablePanel;
@@ -48,7 +52,7 @@ public class AddChainFrame extends JFrame{
         JButton buttonAdd = new JButton("Add");
         buttonAdd.addActionListener(this::addActionPerformed);
         buttonAdd.setPreferredSize( new Dimension( 30, 20 ) );
-        JButton buttonCancel = new JButton("Cencel");
+        JButton buttonCancel = new JButton("Cancel");
         buttonCancel.addActionListener(this::cancelActionPerformed);
         buttonCancel.setPreferredSize( new Dimension( 30, 20 ) );
 
@@ -79,13 +83,31 @@ public class AddChainFrame extends JFrame{
         if (chainTextField.getText().equals("")){
             JOptionPane.showMessageDialog(null, "Some fields are empty!!!");
         }else {
-            MainFrame mainFrame = Main.getMainFrame();
-            ChainPanel chainPanel = mainFrame.getChainPanel();
-            chainPanel.remove(chainTablePanel);
-            chainPanel.revalidate();
-            chainPanel.repaint();
-            chainPanel.add(new ChainTablePanel());
-            this.dispose();
+            //Inserting value into chain table
+            chainDbTable = new ChainDbTable();
+            chainDbTable.createTable();
+            ResultSet resultSet = chainDbTable.selectAll();
+            ArrayList<String> queryList = new ArrayList<>();
+            try {
+                while(resultSet.next()){
+                    queryList.add(resultSet.getString("name").trim().toLowerCase());
+                }
+            } catch (SQLException e1) {
+                e1.printStackTrace();
+            }
+            if(!queryList.contains(chainTextField.getText().toLowerCase())) {
+                chainDbTable.insert(chainTextField.getText());
+                MainFrame mainFrame = Main.getMainFrame();
+                ChainPanel chainPanel = mainFrame.getChainPanel();
+                chainPanel.remove(chainTablePanel);
+                chainPanel.revalidate();
+                chainPanel.repaint();
+                chainPanel.add(new ChainTablePanel());
+                this.dispose();
+            }else {
+                JOptionPane.showMessageDialog(null, "Chain store already exist!");
+                chainTextField.setText("");
+            }
         }
     }
 

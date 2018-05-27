@@ -23,7 +23,7 @@ import java.util.List;
  * contact via email (savchukndr@gmail.com)
  */
 public class AddStoreFrame extends JFrame{
-    private JTextField chainTextField;
+    private JComboBox<String> chainList;
     private JTextField storeTextField;
     private JLabel chainLabel;
     private JLabel storeLabel;
@@ -45,15 +45,17 @@ public class AddStoreFrame extends JFrame{
         storeLabel.setText("Store:");
 
         //Text fields
-        chainTextField = new JTextField();
-        chainTextField.setPreferredSize( new Dimension( 200, 20) );
+        String[] chainTiteles = new String[] {"Effective Java", "Head First Java",
+                "Thinking in Java", "Java for Dummies"};
+        chainList = new JComboBox<>(chainTiteles);
+        chainList.setPreferredSize( new Dimension( 200, 20) );
         storeTextField = new JTextField();
 
         //Buttons
         JButton buttonAdd = new JButton("Add");
         buttonAdd.addActionListener(this::addActionPerformed);
         buttonAdd.setPreferredSize( new Dimension( 30, 20 ) );
-        JButton buttonCancel = new JButton("Cencel");
+        JButton buttonCancel = new JButton("Cancel");
         buttonCancel.addActionListener(this::cancelActionPerformed);
         buttonCancel.setPreferredSize( new Dimension( 30, 20 ) );
 
@@ -64,7 +66,7 @@ public class AddStoreFrame extends JFrame{
                 GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL,
                 new Insets(2,2,2,2), 2, 2));
 
-        add(chainTextField, new GridBagConstraints(1, 0, 1, 1, 1, 1,
+        add(chainList, new GridBagConstraints(1, 0, 1, 1, 1, 1,
                 GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL,
                 new Insets(2,2,2,2), 2, 2));
         add(storeTextField, new GridBagConstraints(1, 1, 1, 1, 1, 1,
@@ -87,8 +89,7 @@ public class AddStoreFrame extends JFrame{
     }
 
     private void addActionPerformed(ActionEvent e){
-        if (storeTextField.getText().equals("")
-                || chainTextField.getText().equals("")){
+        if (storeTextField.getText().equals("")){
             JOptionPane.showMessageDialog(null, "Some fields are empty!!!");
         }else {
             MainFrame mainFrame = Main.getMainFrame();
