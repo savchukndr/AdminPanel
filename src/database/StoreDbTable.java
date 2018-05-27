@@ -4,8 +4,6 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Andrii Savchuk on 27.05.2018.
@@ -13,12 +11,12 @@ import java.util.List;
  * If you will have any cuastion, please
  * contact via email (savchukndr@gmail.com)
  */
-public class ChainDbTable {
+public class StoreDbTable {
     private Connection conn;
     private Statement stmt;
     private Connector connect;
 
-    public ChainDbTable(){
+    public StoreDbTable(){
         connect = new Connector();
         connect.connect();
         conn = connect.getConn();
@@ -31,19 +29,20 @@ public class ChainDbTable {
     public void createTable(){
         try {
             stmt = conn.createStatement();
-            String sql = "CREATE TABLE IF NOT EXISTS chain(" +
-                    "id SERIAL, " +
-                    "name CHAR(25) PRIMARY KEY NOT NULL);";
+            String sql = "CREATE TABLE IF NOT EXISTS store(" +
+                    "id_store SERIAL PRIMARY KEY, " +
+                    "name_chain CHAR(25) REFERENCES chain(name)," +
+                    "store CHAR(30) NOT NULL);";
             stmt.executeUpdate(sql);
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    public void insert(String chainName){
+    public void insert(String nameChain, String store){
         try {
             stmt = conn.createStatement();
-            String sql = "INSERT INTO chain(name) VALUES('" + chainName + "');";
+            String sql = "INSERT INTO store(name_chain, store) VALUES('" + nameChain + "','" + store + "');";
             stmt.executeUpdate(sql);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -54,18 +53,18 @@ public class ChainDbTable {
         ResultSet resultSet = null;
         try {
             stmt = conn.createStatement();
-            String sql = "SELECT * FROM chain;";
+            String sql = "SELECT * FROM store;";
             resultSet = stmt.executeQuery(sql);
         } catch (SQLException ignored) {
         }
         return resultSet;
     }
 
-    public void deleteRow(String chainId){
+    public void deleteRow(String storeId){
         //TODO: delete from chain and all rows from store tables
         try {
             stmt = conn.createStatement();
-            String sql = "DELETE FROM chain WHERE id = " + chainId + ";";
+            String sql = "DELETE FROM store WHERE id_store = " + storeId + ";";
             stmt.executeUpdate(sql);
         } catch (SQLException e) {
             e.printStackTrace();

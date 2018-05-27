@@ -1,5 +1,7 @@
 package dialog_frames;
 
+import database.ChainDbTable;
+import database.StoreDbTable;
 import main.Main;
 import gui.MainFrame;
 import gui_panels.StorePanel;
@@ -12,6 +14,8 @@ import utils.AESCrypt;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import javax.swing.*;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.*;
 import java.util.List;
 
@@ -28,6 +32,8 @@ public class AddStoreFrame extends JFrame{
     private JLabel chainLabel;
     private JLabel storeLabel;
     private StoreTablePanel storeTablePanel;
+    private ChainDbTable chainDbTable;
+    private StoreDbTable storeDbTable;
 
     public AddStoreFrame(StoreTablePanel storeTablePanel){
         this.storeTablePanel = storeTablePanel;
@@ -44,11 +50,23 @@ public class AddStoreFrame extends JFrame{
         storeLabel = new JLabel();
         storeLabel.setText("Store:");
 
-        //Text fields
-        String[] chainTiteles = new String[] {"Effective Java", "Head First Java",
-                "Thinking in Java", "Java for Dummies"};
+        //ComboBox
+        chainDbTable = new ChainDbTable();
+        chainDbTable.createTable();
+        ResultSet resultSet = chainDbTable.selectAll();
+        ArrayList<String> queryList = new ArrayList<>();
+        try {
+            while(resultSet.next()){
+                queryList.add(resultSet.getString("name").trim().toLowerCase());
+            }
+        } catch (SQLException e1) {
+            e1.printStackTrace();
+        }
+        String[] chainTiteles = queryList.toArray(new String[0]);
         chainList = new JComboBox<>(chainTiteles);
         chainList.setPreferredSize( new Dimension( 200, 20) );
+
+        //Text fields
         storeTextField = new JTextField();
 
         //Buttons
@@ -92,6 +110,10 @@ public class AddStoreFrame extends JFrame{
         if (storeTextField.getText().equals("")){
             JOptionPane.showMessageDialog(null, "Some fields are empty!!!");
         }else {
+            storeDbTable = new StoreDbTable();
+            storeDbTable.createTable();
+            String chainNameSelected = (String) chainList.getSelectedItem();
+            storeDbTable.insert(chainNameSelected, storeTextField.getText());
             MainFrame mainFrame = Main.getMainFrame();
             StorePanel storePanel = mainFrame.getStorePanel();
             storePanel.remove(storeTablePanel);

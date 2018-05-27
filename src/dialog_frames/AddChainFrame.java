@@ -96,7 +96,7 @@ public class AddChainFrame extends JFrame{
                 e1.printStackTrace();
             }
             if(!queryList.contains(chainTextField.getText().toLowerCase())) {
-                chainDbTable.insert(chainTextField.getText());
+                chainDbTable.insert(chainTextField.getText().toLowerCase());
                 MainFrame mainFrame = Main.getMainFrame();
                 ChainPanel chainPanel = mainFrame.getChainPanel();
                 chainPanel.remove(chainTablePanel);

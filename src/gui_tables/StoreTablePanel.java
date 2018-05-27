@@ -2,12 +2,15 @@ package gui_tables;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.*;
 import java.util.List;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
+import database.StoreDbTable;
 import dialog_frames.*;
 import gui.MainFrame;
 import gui_panels.StorePanel;
@@ -17,6 +20,8 @@ public class StoreTablePanel extends JPanel{
 
     private JTable table;
     private AddStoreFrame dialogFrame;
+    private StoreDbTable storeDbTable;
+    private HashMap<String, List<String>> storeMap;
 
     //CONSTRUCTOR
     public StoreTablePanel(){
@@ -66,18 +71,33 @@ public class StoreTablePanel extends JPanel{
         //ASSIGN THE MODEL TO TABLE
         table.setModel(model);
         model.addColumn("Select");
-        model.addColumn("Chain Store ID");
-        model.addColumn("Chain Store");
+        model.addColumn("Store ID");
+        model.addColumn("Store Chain");
         model.addColumn("Store");
 
-        //THE ROW
-        for(int i=0;i<=20;i++)
-        {
-            model.addRow(new Object[0]);
-            model.setValueAt(false,i,0);
-            model.setValueAt("ID" + i, i, 1);
-            model.setValueAt("Chain name", i, 2);
-            model.setValueAt("Store", i, 3);
+        storeDbTable = new StoreDbTable();
+        try{
+            ResultSet resultSet = storeDbTable.selectAll();
+            storeMap = new HashMap<>();
+            while(resultSet.next()){
+                List<String> stringList = new ArrayList<>();
+                stringList.add(resultSet.getString("name_chain").trim());
+                stringList.add(resultSet.getString("store").trim());
+                storeMap.put(resultSet.getString("id_store"), stringList);
+            }
+
+            int count = 0;
+            for (String key: storeMap.keySet()) {
+                model.addRow(new Object[0]);
+                List<String> temp = storeMap.get(key);
+                model.setValueAt(false,count,0);
+                model.setValueAt(key, count, 1);
+                model.setValueAt(temp.get(0), count, 2);
+                model.setValueAt(temp.get(1), count, 3);
+                count++;
+            }
+        } catch (NullPointerException | SQLException e) {
+            e.printStackTrace();
         }
 
         //ADD BUTTON TO FORM
@@ -91,10 +111,11 @@ public class StoreTablePanel extends JPanel{
         for(int i=0;i<table.getRowCount();i++)
         {
             Boolean checked=Boolean.valueOf(table.getValueAt(i, 0).toString());
-
+            String chainId = table.getValueAt(i, 1).toString();
             //DISPLAY
             if(checked)
             {
+                storeDbTable.deleteRow(chainId);
                 JOptionPane.showMessageDialog(null, "Deleted: " + i);
             }
         }
