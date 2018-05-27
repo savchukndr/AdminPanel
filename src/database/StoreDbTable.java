@@ -31,8 +31,8 @@ public class StoreDbTable {
             stmt = conn.createStatement();
             String sql = "CREATE TABLE IF NOT EXISTS store(" +
                     "id_store SERIAL PRIMARY KEY, " +
-                    "name_chain CHAR(25) REFERENCES chain(name)," +
-                    "store CHAR(30) NOT NULL);";
+                    "name_chain TEXT REFERENCES chain(name)," +
+                    "store TEXT NOT NULL);";
             stmt.executeUpdate(sql);
         } catch (SQLException e) {
             e.printStackTrace();

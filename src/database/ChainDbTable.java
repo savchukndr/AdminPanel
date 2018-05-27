@@ -33,7 +33,7 @@ public class ChainDbTable {
             stmt = conn.createStatement();
             String sql = "CREATE TABLE IF NOT EXISTS chain(" +
                     "id SERIAL, " +
-                    "name CHAR(25) PRIMARY KEY NOT NULL);";
+                    "name TEXT PRIMARY KEY NOT NULL);";
             stmt.executeUpdate(sql);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -61,12 +61,14 @@ public class ChainDbTable {
         return resultSet;
     }
 
-    public void deleteRow(String chainId){
+    public void deleteRow(String chainName){
         //TODO: delete from chain and all rows from store tables
         try {
             stmt = conn.createStatement();
-            String sql = "DELETE FROM chain WHERE id = " + chainId + ";";
+            String sql = "DELETE FROM store WHERE name_chain = '" + chainName + "';";
             stmt.executeUpdate(sql);
+            String sql1 = "DELETE FROM chain WHERE name = '" + chainName + "';";
+            stmt.executeUpdate(sql1);
         } catch (SQLException e) {
             e.printStackTrace();
         }

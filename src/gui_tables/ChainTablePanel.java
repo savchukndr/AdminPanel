@@ -100,7 +100,7 @@ public class ChainTablePanel extends JPanel{
         for(int i=0;i<table.getRowCount();i++)
         {
             Boolean checked=Boolean.valueOf(table.getValueAt(i, 0).toString());
-            String chainId = table.getValueAt(i, 1).toString();
+            String chainId = table.getValueAt(i, 2).toString();
 
             //DISPLAY
             if(checked)
