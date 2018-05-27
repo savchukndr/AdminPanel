@@ -100,11 +100,13 @@ public class ChainTablePanel extends JPanel{
         for(int i=0;i<table.getRowCount();i++)
         {
             Boolean checked=Boolean.valueOf(table.getValueAt(i, 0).toString());
+            String chainId = table.getValueAt(i, 1).toString();
 
             //DISPLAY
             if(checked)
             {
-                JOptionPane.showMessageDialog(null, "Deleted: " + i);
+                chainDbTable.deleteRow(chainId);
+                JOptionPane.showMessageDialog(null, "Deleted: " + chainId);
             }
         }
 

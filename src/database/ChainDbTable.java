@@ -52,10 +52,21 @@ public class ChainDbTable {
         ResultSet resultSet = null;
         try {
             stmt = conn.createStatement();
-            String sql = "SELECT * FROM public.chain;";
+            String sql = "SELECT * FROM chain;";
             resultSet = stmt.executeQuery(sql);
         } catch (SQLException ignored) {
         }
         return resultSet;
+    }
+
+    public void deleteRow(String chainId){
+        //TODO: delete from chain and all rows from store tables
+        try {
+            stmt = conn.createStatement();
+            String sql = "DELETE FROM chain WHERE id = " + chainId + ";";
+            stmt.executeUpdate(sql);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }
