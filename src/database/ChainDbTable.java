@@ -31,7 +31,7 @@ public class ChainDbTable {
     public void createTable(){
         try {
             stmt = conn.createStatement();
-            String sql = "CREATE TABLE IF NOT EXISTS chain(id SERIAL, name CHAR(50) PRIMARY KEY NOT NULL);";
+            String sql = "CREATE TABLE IF NOT EXISTS chain(id SERIAL, name CHAR(25) PRIMARY KEY NOT NULL);";
             stmt.executeUpdate(sql);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -54,8 +54,7 @@ public class ChainDbTable {
             stmt = conn.createStatement();
             String sql = "SELECT * FROM public.chain;";
             resultSet = stmt.executeQuery(sql);
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException ignored) {
         }
         return resultSet;
     }

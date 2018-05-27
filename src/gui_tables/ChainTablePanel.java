@@ -2,6 +2,10 @@ package gui_tables;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.io.IOException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.HashMap;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -17,6 +21,7 @@ public class ChainTablePanel extends JPanel{
     private JTable table;
     private AddChainFrame dialogFrame;
     private ChainDbTable chainDbTable;
+    private HashMap<String, String> chainMap;
 
     //CONSTRUCTOR
     public ChainTablePanel(){
@@ -39,7 +44,6 @@ public class ChainTablePanel extends JPanel{
         panelTop.add(scrollTable);
         panelBottom.add(buttonDeleteChain);
         panelBottom.add(buttonAddChain);
-
 
         //THE MODEL OF OUR TABLE
         DefaultTableModel model=new DefaultTableModel()
@@ -67,14 +71,23 @@ public class ChainTablePanel extends JPanel{
         model.addColumn("ChainID");
         model.addColumn("Chain");
 
-        //THE ROW
-        for(int i=0;i<=20;i++)
-        {
-            model.addRow(new Object[0]);
-            model.setValueAt(false,i,0);
-            model.setValueAt("ID" + i, i, 1);
-            model.setValueAt("Chain store", i, 2);
-        }
+        chainDbTable = new ChainDbTable();
+        try {
+            ResultSet resultSet = chainDbTable.selectAll();
+            chainMap = new HashMap<>();
+            while(resultSet.next()){
+                chainMap.put(resultSet.getString("id"), resultSet.getString("name").trim());
+            }
+            //THE ROW
+            int count = 0;
+            for (String key: chainMap.keySet()) {
+                model.addRow(new Object[0]);
+                model.setValueAt(false,count,0);
+                model.setValueAt(key, count, 1);
+                model.setValueAt(chainMap.get(key), count, 2);
+                count++;
+            }
+        } catch (NullPointerException | SQLException ignored) {}
 
         //ADD BUTTON TO FORM
         buttonDeleteChain.setBounds(20,30,130,30);
