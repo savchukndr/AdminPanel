@@ -70,6 +70,8 @@ public class ReportTablePanel extends JPanel{
         model.addColumn("Estimation");
         model.addColumn("Agreement");
 
+        //TODO: read from data base
+
         model.addRow(new Object[0]);
         model.setValueAt(1, 0,0);
         model.setValueAt("True", 0,1);
