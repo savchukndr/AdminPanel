@@ -26,6 +26,7 @@ public class MainFrame {
     private StorePanel storePanel;
     private ChainPanel chainPanel;
     private AgreementPanel agreementPanel;
+    private ReportPanel reportPanel;
     private MainPanel mainPanel;
 
     public EmployeePanel getEmployeePanel() {
@@ -42,6 +43,10 @@ public class MainFrame {
 
     public AgreementPanel getAgrementPanel() {
         return agreementPanel;
+    }
+
+    public ReportPanel getReportPanel() {
+        return reportPanel;
     }
 
     public MainFrame(){
@@ -74,6 +79,15 @@ public class MainFrame {
 //                    if (redisIsStarted){
                         storePanel = new StorePanel();
                         setCurrentPanel(storePanel);
+//                    }else{
+//                        JOptionPane.showMessageDialog(null, "Start Server before check Employee Panel.");
+//                    }
+                    break;
+                case "Reports":
+//                    boolean redisIsStarted = MainPanel.isRedisIsStarted();
+//                    if (redisIsStarted){
+                    reportPanel = new ReportPanel();
+                    setCurrentPanel(reportPanel);
 //                    }else{
 //                        JOptionPane.showMessageDialog(null, "Start Server before check Employee Panel.");
 //                    }
@@ -126,6 +140,12 @@ public class MainFrame {
         buttonAgreements.addActionListener(actionListener);
         frame.getContentPane().add(buttonAgreements);
 
+        JButton buttonReports = new JButton("Reports");
+//        buttonMain.setBackground(SystemColor.menu);
+        buttonReports.setBounds(295, 10, 100, 20);
+        buttonReports.addActionListener(actionListener);
+        frame.getContentPane().add(buttonReports);
+
         JButton buttonChains = new JButton("Chains");
 //        buttonMain.setBackground(SystemColor.menu);
         buttonChains.setBounds(295, 10, 100, 20);
@@ -136,7 +156,7 @@ public class MainFrame {
 //        buttonMain.setBackground(SystemColor.menu);
         buttonStores.setBounds(390, 10, 100, 20);
         buttonStores.addActionListener(actionListener);
-        frame.getContentPane().add(buttonStores);
+//        frame.getContentPane().add(buttonStores);
 
         panel = new JPanel();
         panel.setBounds(0, 72, 784, 489);
