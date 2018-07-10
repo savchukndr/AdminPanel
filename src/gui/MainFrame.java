@@ -25,6 +25,7 @@ public class MainFrame {
     private EmployeePanel employeePanel;
     private StorePanel storePanel;
     private ChainPanel chainPanel;
+    private AgreementPanel agreementPanel;
     private MainPanel mainPanel;
 
     public EmployeePanel getEmployeePanel() {
@@ -37,6 +38,10 @@ public class MainFrame {
 
     public ChainPanel getChainPanel() {
         return chainPanel;
+    }
+
+    public AgreementPanel getAgrementPanel() {
+        return agreementPanel;
     }
 
     public MainFrame(){
@@ -69,6 +74,15 @@ public class MainFrame {
 //                    if (redisIsStarted){
                         storePanel = new StorePanel();
                         setCurrentPanel(storePanel);
+//                    }else{
+//                        JOptionPane.showMessageDialog(null, "Start Server before check Employee Panel.");
+//                    }
+                    break;
+                case "Agreements":
+//                    boolean redisIsStarted = MainPanel.isRedisIsStarted();
+//                    if (redisIsStarted){
+                    agreementPanel = new AgreementPanel();
+                    setCurrentPanel(agreementPanel);
 //                    }else{
 //                        JOptionPane.showMessageDialog(null, "Start Server before check Employee Panel.");
 //                    }
@@ -106,15 +120,21 @@ public class MainFrame {
         buttonEmployees.addActionListener(actionListener);
         frame.getContentPane().add(buttonEmployees);
 
+        JButton buttonAgreements = new JButton("Agreements");
+//        buttonMain.setBackground(SystemColor.menu);
+        buttonAgreements.setBounds(200, 10, 110, 20);
+        buttonAgreements.addActionListener(actionListener);
+        frame.getContentPane().add(buttonAgreements);
+
         JButton buttonChains = new JButton("Chains");
 //        buttonMain.setBackground(SystemColor.menu);
-        buttonChains.setBounds(200, 10, 100, 20);
+        buttonChains.setBounds(295, 10, 100, 20);
         buttonChains.addActionListener(actionListener);
-        frame.getContentPane().add(buttonChains);
+//        frame.getContentPane().add(buttonChains);
 
         JButton buttonStores = new JButton("Stores");
 //        buttonMain.setBackground(SystemColor.menu);
-        buttonStores.setBounds(295, 10, 100, 20);
+        buttonStores.setBounds(390, 10, 100, 20);
         buttonStores.addActionListener(actionListener);
         frame.getContentPane().add(buttonStores);
 
