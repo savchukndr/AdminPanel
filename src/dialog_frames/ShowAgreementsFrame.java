@@ -49,6 +49,7 @@ public class ShowAgreementsFrame extends JFrame{
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(new GridBagLayout());
+        setTitle("Agreements");
         JPanel panelLeft = new JPanel();
         panelLeft.setLayout(new GridBagLayout());
 

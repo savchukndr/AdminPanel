@@ -37,6 +37,7 @@ public class AddAgreementFrame extends JFrame{
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(new GridBagLayout());
+        setTitle("Add Agreement");
         JPanel panelLeft = new JPanel();
         panelLeft.setLayout(new GridBagLayout());
 

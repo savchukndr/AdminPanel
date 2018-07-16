@@ -28,6 +28,7 @@ public class MainFrame {
     private AgreementPanel agreementPanel;
     private ReportPanel reportPanel;
     private MainPanel mainPanel;
+    private SearchPanel searchPanel;
 
     public EmployeePanel getEmployeePanel() {
         return employeePanel;
@@ -47,6 +48,10 @@ public class MainFrame {
 
     public ReportPanel getReportPanel() {
         return reportPanel;
+    }
+
+    public SearchPanel getSearchPanel() {
+        return searchPanel;
     }
 
     public MainFrame(){
@@ -101,6 +106,15 @@ public class MainFrame {
 //                        JOptionPane.showMessageDialog(null, "Start Server before check Employee Panel.");
 //                    }
                     break;
+                case "Search":
+//                    boolean redisIsStarted = MainPanel.isRedisIsStarted();
+//                    if (redisIsStarted){
+                    searchPanel = new SearchPanel();
+                    setCurrentPanel(searchPanel);
+//                    }else{
+//                        JOptionPane.showMessageDialog(null, "Start Server before check Employee Panel.");
+//                    }
+                    break;
                 case "Log out":
                     Main.logout();
                     break;
@@ -120,6 +134,7 @@ public class MainFrame {
         frame.setBounds(100, 100, 700, 560);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.getContentPane().setLayout(null);
+        frame.setTitle("Admin Application");
 
         JButton buttonMain = new JButton("Main");
 //        buttonMain.setBackground(SystemColor.menu);
@@ -145,6 +160,12 @@ public class MainFrame {
         buttonReports.setBounds(295, 10, 100, 20);
         buttonReports.addActionListener(actionListener);
         frame.getContentPane().add(buttonReports);
+
+        JButton buttonSearch = new JButton("Search");
+//        buttonMain.setBackground(SystemColor.menu);
+        buttonSearch.setBounds(390, 10, 100, 20);
+        buttonSearch.addActionListener(actionListener);
+//        frame.getContentPane().add(buttonSearch);
 
         JButton buttonChains = new JButton("Chains");
 //        buttonMain.setBackground(SystemColor.menu);
