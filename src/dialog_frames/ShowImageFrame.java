@@ -25,7 +25,7 @@ class MyCanvas extends Canvas {
     public void paint(Graphics g) {
 
         Toolkit t=Toolkit.getDefaultToolkit();
-        Image i=t.getImage("C:\\test\\test_pictures\\1.jpg");
+        Image i=t.getImage("C:\\Users\\savch\\Pictures\\admin\\shelf.PNG");
 //        Image newImage = i.getScaledInstance(20, 20, Image.SCALE_DEFAULT);
         g.drawImage(i, 0,0, 400, 400,this);
 

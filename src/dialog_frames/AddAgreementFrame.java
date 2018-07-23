@@ -1,6 +1,7 @@
 package dialog_frames;
 
 //import database.AgreementDbTable;
+import database.AgreementDbTable;
 import main.Main;
 import gui.MainFrame;
 import gui_panels.AgreementPanel;
@@ -13,6 +14,8 @@ import utils.AESCrypt;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import javax.swing.*;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
@@ -29,7 +32,22 @@ public class AddAgreementFrame extends JFrame{
     private JTextField agreementTitleTextField, chainStoreTextField, storeTextField,productTypeTextField, productTextField, productCountTextField, shelfPositionTextField;
     private JLabel agreementTitleLabel, chainStoreLabel, storeLabel, productTypeLabel, productLabel, productCountLabel, shelfPositionLabel;
     private AgreementTablePanel agreementTablePanel;
-//    private AgreementDbTable agreementDbTable;
+    private AgreementDbTable agreementDbTable;
+    private JComboBox chainList, storeList, productTypeList;
+    private DefaultComboBoxModel modelStore, modelProduct;
+
+    private String[] generateList (ResultSet selectMethod, String title){
+        ResultSet resultSet = selectMethod;
+        ArrayList<String> queryList = new ArrayList<>();
+        try {
+            while(resultSet.next()){
+                queryList.add(resultSet.getString(title).trim().toLowerCase());
+            }
+        } catch (SQLException e1) {
+            e1.printStackTrace();
+        }
+        return queryList.toArray(new String[0]);
+    }
 
     public AddAgreementFrame(AgreementTablePanel agreementTablePanel){
         this.agreementTablePanel = agreementTablePanel;
@@ -57,6 +75,40 @@ public class AddAgreementFrame extends JFrame{
         shelfPositionLabel = new JLabel();
         shelfPositionLabel.setText("Shelf Position:");
 
+        //ComboBox
+        agreementDbTable = new AgreementDbTable();
+        chainList = new JComboBox<>(generateList(agreementDbTable.selectChain(), "name"));
+//        chainList.setSelectedIndex(0);
+        String selectedChain = (String) chainList.getSelectedItem();
+        modelStore = new DefaultComboBoxModel(generateList(agreementDbTable.selectStore(selectedChain), "store"));
+        storeList = new JComboBox<>(modelStore);
+        chainList.addItemListener(e -> {
+            if(e.getStateChange() == ItemEvent.SELECTED) {
+                storeList.removeAllItems();
+                modelStore.removeAllElements();
+                String a = chainList.getSelectedItem().toString();
+                String[] s = generateList(agreementDbTable.selectStore(a), "store");
+                storeList = new JComboBox<>(generateList(agreementDbTable.selectStore(a), "store"));
+                for (String x: s) {
+                    modelStore.addElement(x);
+                }
+            }
+        });
+
+        //////////
+        ResultSet resultSet = agreementDbTable.selectProductType();
+        HashMap<String, String> productMap = new HashMap<>();
+        try {
+            while(resultSet.next()){
+                productMap.put(resultSet.getString("id_product_type"), resultSet.getString("title").trim());
+            }
+        } catch (SQLException e1) {
+            e1.printStackTrace();
+        }
+
+        String[] simpleArray = productMap.values().toArray(new String[0]);
+        productTypeList = new JComboBox<>(simpleArray);
+        ///////////
 
         //Text fields
         agreementTitleTextField = new JTextField();
@@ -107,13 +159,13 @@ public class AddAgreementFrame extends JFrame{
         add(agreementTitleTextField, new GridBagConstraints(1, 0, 1, 1, 1, 1,
                 GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL,
                 new Insets(2,2,2,2), 2, 2));
-        add(chainStoreTextField, new GridBagConstraints(1, 1, 1, 1, 1, 1,
+        add(chainList, new GridBagConstraints(1, 1, 1, 1, 1, 1,
                 GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL,
                 new Insets(2,2,2,2), 2, 2));
-        add(storeTextField, new GridBagConstraints(1, 2, 1, 1, 1, 1,
+        add(storeList, new GridBagConstraints(1, 2, 1, 1, 1, 1,
                 GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL,
                 new Insets(2,2,2,2), 2, 2));
-        add(productTypeTextField, new GridBagConstraints(1, 3, 1, 1, 1, 1,
+        add(productTypeList, new GridBagConstraints(1, 3, 1, 1, 1, 1,
                 GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL,
                 new Insets(2,2,2,2), 2, 2));
         add(productTextField, new GridBagConstraints(1, 4, 1, 1, 1, 1,
@@ -142,36 +194,8 @@ public class AddAgreementFrame extends JFrame{
     }
 
     private void addActionPerformed(ActionEvent e){
-        //TODO: insert into data base
-//        if (agreementTextField.getText().equals("")){
-//            JOptionPane.showMessageDialog(null, "Some fields are empty!!!");
-//        }else {
-//            //Inserting value into agreement table
-//            agreementDbTable = new AgreementDbTable();
-//            agreementDbTable.createTable();
-//            ResultSet resultSet = agreementDbTable.selectAll();
-//            ArrayList<String> queryList = new ArrayList<>();
-//            try {
-//                while(resultSet.next()){
-//                    queryList.add(resultSet.getString("name").trim().toLowerCase());
-//                }
-//            } catch (SQLException e1) {
-//                e1.printStackTrace();
-//            }
-//            if(!queryList.contains(agreementTextField.getText().toLowerCase())) {
-//                agreementDbTable.insert(agreementTextField.getText().toLowerCase());
-//                MainFrame mainFrame = Main.getMainFrame();
-//                AgreementPanel agreementPanel = mainFrame.getAgreementPanel();
-//                agreementPanel.remove(agreementTablePanel);
-//                agreementPanel.revalidate();
-//                agreementPanel.repaint();
-//                agreementPanel.add(new AgreementTablePanel());
-//                this.dispose();
-//            }else {
-//                JOptionPane.showMessageDialog(null, "Agreement already exist!");
-//                agreementTextField.setText("");
-//            }
-//        }
+        System.out.println((String) chainList.getSelectedItem()); //Chain into data base
+        System.out.println((String) modelStore.getSelectedItem()); //Store into data base
     }
 
     private void cancelActionPerformed(ActionEvent e){

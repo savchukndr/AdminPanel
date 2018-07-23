@@ -169,15 +169,15 @@ public class MainFrame {
 
         JButton buttonChains = new JButton("Chains");
 //        buttonMain.setBackground(SystemColor.menu);
-        buttonChains.setBounds(295, 10, 100, 20);
+        buttonChains.setBounds(390, 10, 100, 20);
         buttonChains.addActionListener(actionListener);
-//        frame.getContentPane().add(buttonChains);
+        frame.getContentPane().add(buttonChains);
 
         JButton buttonStores = new JButton("Stores");
 //        buttonMain.setBackground(SystemColor.menu);
-        buttonStores.setBounds(390, 10, 100, 20);
+        buttonStores.setBounds(485, 10, 100, 20);
         buttonStores.addActionListener(actionListener);
-//        frame.getContentPane().add(buttonStores);
+        frame.getContentPane().add(buttonStores);
 
         panel = new JPanel();
         panel.setBounds(0, 72, 784, 489);
