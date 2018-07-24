@@ -36,25 +36,29 @@ public class AddAgreementFrame extends JFrame{
     private JComboBox chainList, storeList, productTypeList, productList;
     private DefaultComboBoxModel modelStore, modelProduct;
 
-    private String[] generateList (ResultSet selectMethod, String title){
-        ResultSet resultSet = selectMethod;
-        ArrayList<String> queryList = new ArrayList<>();
-        try {
-            while(resultSet.next()){
-                queryList.add(resultSet.getString(title).trim().toLowerCase());
-            }
-        } catch (SQLException e1) {
-            e1.printStackTrace();
-        }
-        return queryList.toArray(new String[0]);
-    }
-
-    private HashMap<String, String> generateList (ResultSet selectMethod){
+    private HashMap<String, String> generateListChain (ResultSet selectMethod){
         ResultSet resultSet = selectMethod;
         HashMap<String, String> map = new HashMap<>();
         try {
             while(resultSet.next()){
-                map.put(resultSet.getString("title"), resultSet.getString("id_product_type").trim());
+                map.put(resultSet.getString("title"), resultSet.getString("id_chain").trim());
+            }
+        } catch (SQLException e1) {
+            e1.printStackTrace();
+        }
+        return map;
+    }
+
+    private HashMap<String, List<String>> generateListStore (ResultSet selectMethod){
+        ResultSet resultSet = selectMethod;
+        HashMap<String, List<String>> map = new HashMap<>();
+        List<String> list;
+        try {
+            while(resultSet.next()){
+                list = new ArrayList<>();
+                list.add(resultSet.getString("id_chain"));
+                list.add(resultSet.getString("title"));
+                map.put(resultSet.getString("id_store"), list);
             }
         } catch (SQLException e1) {
             e1.printStackTrace();
@@ -63,7 +67,23 @@ public class AddAgreementFrame extends JFrame{
         return map;
     }
 
-    private HashMap<String, List<String>> generateList (ResultSet selectMethod, boolean f){
+    private HashMap<String, String> generateListProductType (ResultSet selectMethod){
+        ResultSet resultSet = selectMethod;
+        HashMap<String, String> map = new HashMap<>();
+        try {
+            while(resultSet.next()){
+                map.put(resultSet.getString("title"), resultSet.getString("id_product_type").trim());
+        }
+        } catch (SQLException e1) {
+            e1.printStackTrace();
+        }
+
+        return map;
+    }
+
+
+
+    private HashMap<String, List<String>> generateListProduct (ResultSet selectMethod){
         ResultSet resultSet = selectMethod;
         HashMap<String, List<String>> map = new HashMap<>();
         List<String> list;
@@ -81,13 +101,22 @@ public class AddAgreementFrame extends JFrame{
         return map;
     }
 
-    private String[] generateArrayProduct(String selectedProductTypeID){
-        HashMap<String, List<String>> productMap = generateList(agreementDbTable.selectProduct(selectedProductTypeID), true);
-        List<String> productValues = new ArrayList<>();
-        for (List<String> x: productMap.values()) {
-            productValues.add(x.get(1));
+    private String[] generateArrayProduct(String selectedID){
+        HashMap<String, List<String>> map = generateListProduct(agreementDbTable.selectProduct(selectedID));
+        List<String> values = new ArrayList<>();
+        for (List<String> x: map.values()) {
+            values.add(x.get(1));
         }
-        return productValues.toArray(new String[0]);
+        return values.toArray(new String[0]);
+    }
+
+    private String[] generateArrayStore(String selectedID){
+        HashMap<String, List<String>> map = generateListStore(agreementDbTable.selectStore(selectedID));
+        List<String> values = new ArrayList<>();
+        for (List<String> x: map.values()) {
+            values.add(x.get(1));
+        }
+        return values.toArray(new String[0]);
     }
 
     public AddAgreementFrame(AgreementTablePanel agreementTablePanel){
@@ -118,25 +147,51 @@ public class AddAgreementFrame extends JFrame{
 
         //ComboBox
         agreementDbTable = new AgreementDbTable();
-        chainList = new JComboBox<>(generateList(agreementDbTable.selectChain(), "name"));
+//        chainList = new JComboBox<>(generateList(agreementDbTable.selectChain(), "name"));
+//        String selectedChain = (String) chainList.getSelectedItem();
+//        modelStore = new DefaultComboBoxModel(generateList(agreementDbTable.selectStore(selectedChain), "store"));
+//        storeList = new JComboBox<>(modelStore);
+//        chainList.addItemListener(e -> {
+//            if(e.getStateChange() == ItemEvent.SELECTED) {
+//                storeList.removeAllItems();
+//                modelStore.removeAllElements();
+//                String a = chainList.getSelectedItem().toString();
+//                String[] s = generateList(agreementDbTable.selectStore(a), "store");
+//                storeList = new JComboBox<>(s);
+//                for (String x: s) {
+//                    modelStore.addElement(x);
+//                }
+//            }
+//        });
+
+        //---------------
+        HashMap<String, String> chainMap = generateListChain(agreementDbTable.selectChain());
+        String[] chainArray = chainMap.keySet().toArray(new String[0]);
+        System.out.println(chainArray);
+        chainList = new JComboBox<>(chainArray);
+
         String selectedChain = (String) chainList.getSelectedItem();
-        modelStore = new DefaultComboBoxModel(generateList(agreementDbTable.selectStore(selectedChain), "store"));
+        String[] storeArray = generateArrayStore(chainMap.get(selectedChain));
+
+        modelStore = new DefaultComboBoxModel(storeArray);
         storeList = new JComboBox<>(modelStore);
         chainList.addItemListener(e -> {
             if(e.getStateChange() == ItemEvent.SELECTED) {
                 storeList.removeAllItems();
                 modelStore.removeAllElements();
                 String a = chainList.getSelectedItem().toString();
-                String[] s = generateList(agreementDbTable.selectStore(a), "store");
+                String[] s = generateArrayStore(chainMap.get(a));
+
                 storeList = new JComboBox<>(s);
                 for (String x: s) {
                     modelStore.addElement(x);
                 }
             }
         });
+        //---------------
 
         //////////////////////////
-        HashMap<String, String> productTypeMap = generateList(agreementDbTable.selectProductType());
+        HashMap<String, String> productTypeMap = generateListProductType(agreementDbTable.selectProductType());
         String[] productTypeArray = productTypeMap.keySet().toArray(new String[0]);
         productTypeList = new JComboBox<>(productTypeArray);
 
@@ -240,6 +295,9 @@ public class AddAgreementFrame extends JFrame{
         System.out.println((String) modelStore.getSelectedItem()); //Store into data base
         System.out.println((String) productTypeList.getSelectedItem()); //Store into data base
         System.out.println((String) modelProduct.getSelectedItem()); //Store into data base
+
+        //id_store
+        //id_product
     }
 
     private void cancelActionPerformed(ActionEvent e){

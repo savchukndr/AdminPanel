@@ -41,18 +41,18 @@ public class AgreementDbTable {
         ResultSet resultSet = null;
         try {
             stmt = conn.createStatement();
-            String sql = "SELECT * FROM chain";
+            String sql = "SELECT id_chain, title FROM chain";
             resultSet = stmt.executeQuery(sql);
         } catch (SQLException ignored) {
         }
         return resultSet;
     }
 
-    public ResultSet selectStore(String chainSearch){
+    public ResultSet selectStore(String idChain){
         ResultSet resultSet = null;
         try {
             stmt = conn.createStatement();
-            String sql = "SELECT store FROM store WHERE name_chain='" + chainSearch + "'";
+            String sql = "SELECT id_chain,id_store,title FROM store WHERE id_chain=" + Integer.parseInt(idChain);
             resultSet = stmt.executeQuery(sql);
         } catch (SQLException ignored) {
         }
