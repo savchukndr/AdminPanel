@@ -103,4 +103,45 @@ public class AgreementDbTable {
         return resultSet;
     }
 
+    public void insertAgreement(int id_store){
+        try {
+            stmt = conn.createStatement();
+            String sql = "INSERT INTO agreement(id_store) VALUES(" + id_store + ");";
+            stmt.executeUpdate(sql);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public ResultSet selectAgreementID(int id_store){
+        ResultSet resultSet = null;
+        try {
+            stmt = conn.createStatement();
+            String sql = "SELECT id_agreement FROM agreement WHERE id_store=" + id_store;
+            resultSet = stmt.executeQuery(sql);
+        } catch (SQLException ignored) {
+        }
+        return resultSet;
+    }
+
+    public void insertAgreementData(String title, int productCount, int productShelfPosition, int productId, int agreementId){
+        try {
+            stmt = conn.createStatement();
+            String sql = "INSERT INTO agreement_data( " +
+                    "title," +
+                    "product_count, " +
+                    "product_shelf_position," +
+                    " id_product," +
+                    " id_agreement) VALUES(" +
+                    "'" + title + "', " +
+                    "" + productCount + ", " +
+                    "" + productShelfPosition + ", " +
+                    "" + productId + ", " +
+                    "" + agreementId + ");";
+            stmt.executeUpdate(sql);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

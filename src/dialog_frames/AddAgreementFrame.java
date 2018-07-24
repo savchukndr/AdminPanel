@@ -280,10 +280,15 @@ public class AddAgreementFrame extends JFrame{
         System.out.println((String) productTypeList.getSelectedItem()); //Store into data base
         System.out.println((String) modelProduct.getSelectedItem()); //Store into data base
 
+        String agreementTitle = agreementTitleTextField.getText();
+        String productCount = productCountTextField.getText();
+        String shelfPosition = shelfPositionTextField.getText();
         String selectedStoreTitle = (String) modelStore.getSelectedItem();
         String selectedProductTitle = (String) modelProduct.getSelectedItem();
+
         int storeId = 0;
         int productId = 0;
+        int agreementId = 0;
         ResultSet resSet;
         try {
             resSet = agreementDbTable.selectStoreID(selectedStoreTitle);
@@ -298,10 +303,20 @@ public class AddAgreementFrame extends JFrame{
         } catch (SQLException e1) {
             e1.printStackTrace();
         }
-        System.out.println(storeId); //Store ID
-        System.out.println(productId); //Product ID
-        //id_store
-        //id_product
+
+        //add data into agreement
+        agreementDbTable.insertAgreement(storeId);
+        try {
+            resSet = agreementDbTable.selectAgreementID(storeId);
+            while(resSet.next()){
+                agreementId = Integer.parseInt(resSet.getString("id_agreement"));
+            }
+        } catch (SQLException e1) {
+            e1.printStackTrace();
+        }
+
+        //add data into agreement_data
+        agreementDbTable.insertAgreementData(agreementTitle, Integer.parseInt(productCount), Integer.parseInt(shelfPosition), productId, agreementId);
     }
 
     private void cancelActionPerformed(ActionEvent e){
