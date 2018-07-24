@@ -59,6 +59,17 @@ public class AgreementDbTable {
         return resultSet;
     }
 
+    public ResultSet selectStoreID(String titleChain){
+        ResultSet resultSet = null;
+        try {
+            stmt = conn.createStatement();
+            String sql = "SELECT id_store FROM store WHERE title='" + titleChain + "'";
+            resultSet = stmt.executeQuery(sql);
+        } catch (SQLException ignored) {
+        }
+        return resultSet;
+    }
+
     public ResultSet selectProductType(){
         ResultSet resultSet = null;
         try {
@@ -75,6 +86,17 @@ public class AgreementDbTable {
         try {
             stmt = conn.createStatement();
             String sql = "SELECT id_product,id_product_type,title FROM product WHERE id_product_type=" + Integer.parseInt(idProductTypeSearch);
+            resultSet = stmt.executeQuery(sql);
+        } catch (SQLException ignored) {
+        }
+        return resultSet;
+    }
+
+    public ResultSet selectProductID(String titleProduct){
+        ResultSet resultSet = null;
+        try {
+            stmt = conn.createStatement();
+            String sql = "SELECT id_product FROM product WHERE title='" + titleProduct + "'";
             resultSet = stmt.executeQuery(sql);
         } catch (SQLException ignored) {
         }

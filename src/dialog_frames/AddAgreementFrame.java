@@ -147,22 +147,6 @@ public class AddAgreementFrame extends JFrame{
 
         //ComboBox
         agreementDbTable = new AgreementDbTable();
-//        chainList = new JComboBox<>(generateList(agreementDbTable.selectChain(), "name"));
-//        String selectedChain = (String) chainList.getSelectedItem();
-//        modelStore = new DefaultComboBoxModel(generateList(agreementDbTable.selectStore(selectedChain), "store"));
-//        storeList = new JComboBox<>(modelStore);
-//        chainList.addItemListener(e -> {
-//            if(e.getStateChange() == ItemEvent.SELECTED) {
-//                storeList.removeAllItems();
-//                modelStore.removeAllElements();
-//                String a = chainList.getSelectedItem().toString();
-//                String[] s = generateList(agreementDbTable.selectStore(a), "store");
-//                storeList = new JComboBox<>(s);
-//                for (String x: s) {
-//                    modelStore.addElement(x);
-//                }
-//            }
-//        });
 
         //---------------
         HashMap<String, String> chainMap = generateListChain(agreementDbTable.selectChain());
@@ -296,6 +280,26 @@ public class AddAgreementFrame extends JFrame{
         System.out.println((String) productTypeList.getSelectedItem()); //Store into data base
         System.out.println((String) modelProduct.getSelectedItem()); //Store into data base
 
+        String selectedStoreTitle = (String) modelStore.getSelectedItem();
+        String selectedProductTitle = (String) modelProduct.getSelectedItem();
+        int storeId = 0;
+        int productId = 0;
+        ResultSet resSet;
+        try {
+            resSet = agreementDbTable.selectStoreID(selectedStoreTitle);
+            while(resSet.next()){
+                storeId = Integer.parseInt(resSet.getString("id_store"));
+            }
+
+            resSet = agreementDbTable.selectProductID(selectedProductTitle);
+            while(resSet.next()){
+                productId = Integer.parseInt(resSet.getString("id_product"));
+            }
+        } catch (SQLException e1) {
+            e1.printStackTrace();
+        }
+        System.out.println(storeId); //Store ID
+        System.out.println(productId); //Product ID
         //id_store
         //id_product
     }
