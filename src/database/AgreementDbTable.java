@@ -74,7 +74,7 @@ public class AgreementDbTable {
         ResultSet resultSet = null;
         try {
             stmt = conn.createStatement();
-            String sql = "SELECT id_product,title FROM product WHERE id_product_type='" + idProductTypeSearch + "'";
+            String sql = "SELECT id_product,id_product_type,title FROM product WHERE id_product_type=" + Integer.parseInt(idProductTypeSearch);
             resultSet = stmt.executeQuery(sql);
         } catch (SQLException ignored) {
         }

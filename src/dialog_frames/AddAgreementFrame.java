@@ -29,11 +29,11 @@ import java.util.List;
  * contact via email (savchukndr@gmail.com)
  */
 public class AddAgreementFrame extends JFrame{
-    private JTextField agreementTitleTextField, chainStoreTextField, storeTextField,productTypeTextField, productTextField, productCountTextField, shelfPositionTextField;
+    private JTextField agreementTitleTextField, productCountTextField, shelfPositionTextField;
     private JLabel agreementTitleLabel, chainStoreLabel, storeLabel, productTypeLabel, productLabel, productCountLabel, shelfPositionLabel;
     private AgreementTablePanel agreementTablePanel;
     private AgreementDbTable agreementDbTable;
-    private JComboBox chainList, storeList, productTypeList;
+    private JComboBox chainList, storeList, productTypeList, productList;
     private DefaultComboBoxModel modelStore, modelProduct;
 
     private String[] generateList (ResultSet selectMethod, String title){
@@ -47,6 +47,47 @@ public class AddAgreementFrame extends JFrame{
             e1.printStackTrace();
         }
         return queryList.toArray(new String[0]);
+    }
+
+    private HashMap<String, String> generateList (ResultSet selectMethod){
+        ResultSet resultSet = selectMethod;
+        HashMap<String, String> map = new HashMap<>();
+        try {
+            while(resultSet.next()){
+                map.put(resultSet.getString("title"), resultSet.getString("id_product_type").trim());
+            }
+        } catch (SQLException e1) {
+            e1.printStackTrace();
+        }
+
+        return map;
+    }
+
+    private HashMap<String, List<String>> generateList (ResultSet selectMethod, boolean f){
+        ResultSet resultSet = selectMethod;
+        HashMap<String, List<String>> map = new HashMap<>();
+        List<String> list;
+        try {
+            while(resultSet.next()){
+                list = new ArrayList<>();
+                list.add(resultSet.getString("id_product_type"));
+                list.add(resultSet.getString("title"));
+                map.put(resultSet.getString("id_product"), list);
+            }
+        } catch (SQLException e1) {
+            e1.printStackTrace();
+        }
+
+        return map;
+    }
+
+    private String[] generateArrayProduct(String selectedProductTypeID){
+        HashMap<String, List<String>> productMap = generateList(agreementDbTable.selectProduct(selectedProductTypeID), true);
+        List<String> productValues = new ArrayList<>();
+        for (List<String> x: productMap.values()) {
+            productValues.add(x.get(1));
+        }
+        return productValues.toArray(new String[0]);
     }
 
     public AddAgreementFrame(AgreementTablePanel agreementTablePanel){
@@ -78,7 +119,6 @@ public class AddAgreementFrame extends JFrame{
         //ComboBox
         agreementDbTable = new AgreementDbTable();
         chainList = new JComboBox<>(generateList(agreementDbTable.selectChain(), "name"));
-//        chainList.setSelectedIndex(0);
         String selectedChain = (String) chainList.getSelectedItem();
         modelStore = new DefaultComboBoxModel(generateList(agreementDbTable.selectStore(selectedChain), "store"));
         storeList = new JComboBox<>(modelStore);
@@ -88,39 +128,41 @@ public class AddAgreementFrame extends JFrame{
                 modelStore.removeAllElements();
                 String a = chainList.getSelectedItem().toString();
                 String[] s = generateList(agreementDbTable.selectStore(a), "store");
-                storeList = new JComboBox<>(generateList(agreementDbTable.selectStore(a), "store"));
+                storeList = new JComboBox<>(s);
                 for (String x: s) {
                     modelStore.addElement(x);
                 }
             }
         });
 
-        //////////
-        ResultSet resultSet = agreementDbTable.selectProductType();
-        HashMap<String, String> productMap = new HashMap<>();
-        try {
-            while(resultSet.next()){
-                productMap.put(resultSet.getString("id_product_type"), resultSet.getString("title").trim());
-            }
-        } catch (SQLException e1) {
-            e1.printStackTrace();
-        }
+        //////////////////////////
+        HashMap<String, String> productTypeMap = generateList(agreementDbTable.selectProductType());
+        String[] productTypeArray = productTypeMap.keySet().toArray(new String[0]);
+        productTypeList = new JComboBox<>(productTypeArray);
 
-        String[] simpleArray = productMap.values().toArray(new String[0]);
-        productTypeList = new JComboBox<>(simpleArray);
-        ///////////
+        String selectedProductType = (String) productTypeList.getSelectedItem();
+        String[] productArray = generateArrayProduct(productTypeMap.get(selectedProductType));
+
+        modelProduct = new DefaultComboBoxModel(productArray);
+        productList = new JComboBox<>(modelProduct);
+        productTypeList.addItemListener(e -> {
+            if(e.getStateChange() == ItemEvent.SELECTED) {
+                productList.removeAllItems();
+                modelProduct.removeAllElements();
+                String a = productTypeList.getSelectedItem().toString();
+                String[] s = generateArrayProduct(productTypeMap.get(a));
+
+                productList = new JComboBox<>(s);
+                for (String x: s) {
+                    modelProduct.addElement(x);
+                }
+            }
+        });
+        /////////////////////////
 
         //Text fields
         agreementTitleTextField = new JTextField();
         agreementTitleTextField.setPreferredSize( new Dimension( 200, 20) );
-        chainStoreTextField = new JTextField();
-        chainStoreTextField.setPreferredSize( new Dimension( 200, 20) );
-        storeTextField = new JTextField();
-        storeTextField.setPreferredSize( new Dimension( 200, 20) );
-        productTypeTextField = new JTextField();
-        productTypeTextField.setPreferredSize( new Dimension( 200, 20) );
-        productTextField = new JTextField();
-        productTextField.setPreferredSize( new Dimension( 200, 20) );
         productCountTextField = new JTextField();
         productCountTextField.setPreferredSize( new Dimension( 200, 20) );
         shelfPositionTextField = new JTextField();
@@ -168,7 +210,7 @@ public class AddAgreementFrame extends JFrame{
         add(productTypeList, new GridBagConstraints(1, 3, 1, 1, 1, 1,
                 GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL,
                 new Insets(2,2,2,2), 2, 2));
-        add(productTextField, new GridBagConstraints(1, 4, 1, 1, 1, 1,
+        add(productList, new GridBagConstraints(1, 4, 1, 1, 1, 1,
                 GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL,
                 new Insets(2,2,2,2), 2, 2));
         add(productCountTextField, new GridBagConstraints(1, 5, 1, 1, 1, 1,
@@ -196,6 +238,8 @@ public class AddAgreementFrame extends JFrame{
     private void addActionPerformed(ActionEvent e){
         System.out.println((String) chainList.getSelectedItem()); //Chain into data base
         System.out.println((String) modelStore.getSelectedItem()); //Store into data base
+        System.out.println((String) productTypeList.getSelectedItem()); //Store into data base
+        System.out.println((String) modelProduct.getSelectedItem()); //Store into data base
     }
 
     private void cancelActionPerformed(ActionEvent e){
