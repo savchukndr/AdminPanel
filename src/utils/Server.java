@@ -1,5 +1,6 @@
 package utils;
 
+import database.AgreementDbTable;
 import org.json.JSONException;
 import org.json.JSONObject;
 import redis.clients.jedis.Jedis;
@@ -8,6 +9,8 @@ import javax.swing.*;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -29,6 +32,8 @@ public class Server {
     private Jedis jedis;
     private RedisUtils mapRedisObject;
     private List<String> keyList;
+    private AgreementDbTable agreementDbTable;
+    private String photoPath;
 
     public Server(JTextArea outputDestination, int port){
         this.port = port;
@@ -91,32 +96,59 @@ public class Server {
     }
 
     private synchronized void orderData(JSONObject jsonObj){
+        agreementDbTable = new AgreementDbTable();
         try {
             if (!jsonObj.getString("image").equals("")) {
                 out.write(jsonObj.getString("image"));
                 byte[] decodedString = new sun.misc.BASE64Decoder().decodeBuffer(jsonObj.getString("image"));
-                File of = new File("C:\\test\\yourFile.jpeg");
+                photoPath = "C:\\test\\img_to_perceed.jpeg";
+                File of = new File(photoPath);
                 FileOutputStream osf = new FileOutputStream(of);
                 osf.write(decodedString);
                 osf.flush();
             }
-            UpdateServerStatusWindow("login: " + jsonObj.getString("login"), outputDestination);
-            UpdateServerStatusWindow("name: " + jsonObj.getString("name"), outputDestination);
-            UpdateServerStatusWindow("localization: " + jsonObj.getString("localization"), outputDestination);
-            if (jsonObj.getString("image").equals("")){
-                UpdateServerStatusWindow("comment: no comment", outputDestination);
-            }else {
-                UpdateServerStatusWindow("comment: " + jsonObj.getString("comment"), outputDestination);
+
+            //--Get agreement id from agreement_data
+            ResultSet resSet;
+            int agreementId = 0;
+            try {
+                resSet = agreementDbTable.selectAgreementIDbyTittle(jsonObj.getString("agreement"));
+                while(resSet.next()){
+                    agreementId = Integer.parseInt(resSet.getString("id_agreement"));
+                }
+            } catch (SQLException e1) {
+                e1.printStackTrace();
             }
+            String date = jsonObj.getString("date");
+            String login = jsonObj.getString("login");
+            String imageId = date + "_" + login + "_" + agreementId;
+            System.out.println(date + "_" + login + "_" + agreementId);
+            //----------------
+
+
             if (jsonObj.getString("image").equals("")){
-                UpdateServerStatusWindow("image: no image", outputDestination);
+                UpdateServerStatusWindow("!!!! WARNING !!!", outputDestination);
+                UpdateServerStatusWindow("--- NO IMAGE ---", outputDestination);
+                UpdateServerStatusWindow("!!!! WARNING !!!", outputDestination);
             }else {
-                UpdateServerStatusWindow("photo path: C:\\test\\yourFile.jpeg", outputDestination);
+                RedisUtils redisUtils = new RedisUtils();
+                redisUtils.insertImageIntoDB(imageId, jsonObj.getString("image"));
+                UpdateServerStatusWindow("photo path: " + photoPath, outputDestination);
             }
-            UpdateServerStatusWindow("Chain Store: " + jsonObj.getString("chainStore"), outputDestination);
-            UpdateServerStatusWindow("Store: " + jsonObj.getString("store"), outputDestination);
-            UpdateServerStatusWindow("Shelf amount: " + jsonObj.getString("shelf"), outputDestination);
             UpdateServerStatusWindow("Time stamp: " + jsonObj.getString("date"), outputDestination);
+            UpdateServerStatusWindow("login: " + jsonObj.getString("login"), outputDestination);
+            UpdateServerStatusWindow("agreement: " + jsonObj.getString("agreement"), outputDestination);
+            //TODO: start python algorithm
+//            UpdateServerStatusWindow("name: " + jsonObj.getString("name"), outputDestination);
+//            UpdateServerStatusWindow("localization: " + jsonObj.getString("localization"), outputDestination);
+//            if (jsonObj.getString("image").equals("")){
+//                UpdateServerStatusWindow("comment: no comment", outputDestination);
+//            }else {
+//                UpdateServerStatusWindow("comment: " + jsonObj.getString("comment"), outputDestination);
+//            }
+//            UpdateServerStatusWindow("Chain Store: " + jsonObj.getString("chainStore"), outputDestination);
+//            UpdateServerStatusWindow("Store: " + jsonObj.getString("store"), outputDestination);
+
         } catch (JSONException | IOException e) {
             UpdateServerStatusWindow(e.toString(), outputDestination);
         }

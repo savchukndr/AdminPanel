@@ -124,6 +124,17 @@ public class AgreementDbTable {
         return resultSet;
     }
 
+    public ResultSet selectAgreementIDbyTittle(String title){
+        ResultSet resultSet = null;
+        try {
+            stmt = conn.createStatement();
+            String sql = "SELECT id_agreement FROM agreement_data WHERE title='" + title + "'";
+            resultSet = stmt.executeQuery(sql);
+        } catch (SQLException ignored) {
+        }
+        return resultSet;
+    }
+
     public void insertAgreementData(String title, int productCount, int productShelfPosition, int productId, int agreementId){
         try {
             stmt = conn.createStatement();

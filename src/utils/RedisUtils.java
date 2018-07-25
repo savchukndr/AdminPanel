@@ -45,4 +45,8 @@ public class RedisUtils {
         }
         return json;
     }
+
+    public void insertImageIntoDB(String key, String image){
+        jedis.set(key, image);
+    }
 }
