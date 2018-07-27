@@ -95,6 +95,23 @@ public class Server {
         }
     }
 
+    private String runPython()
+    { //need to call myscript.py and also pass arg1 as its arguments.
+        //and also myscript.py path is in C:\Demo\myscript.py
+
+        String[] cmd = {
+                "C:\\Users\\savch\\PycharmProjects\\template-matcher\\venv\\Scripts\\python.exe",
+                "C:\\Users\\savch\\PycharmProjects\\template-matcher\\main.py",
+                "baba"
+        };
+        try {
+            Runtime.getRuntime().exec(cmd);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "Image processing started";
+    }
+
     private synchronized void orderData(JSONObject jsonObj){
         agreementDbTable = new AgreementDbTable();
         try {
@@ -139,6 +156,11 @@ public class Server {
             UpdateServerStatusWindow("login: " + jsonObj.getString("login"), outputDestination);
             UpdateServerStatusWindow("agreement: " + jsonObj.getString("agreement"), outputDestination);
             //TODO: start python algorithm
+
+            //-------
+            runPython();
+            //-------
+
 //            UpdateServerStatusWindow("name: " + jsonObj.getString("name"), outputDestination);
 //            UpdateServerStatusWindow("localization: " + jsonObj.getString("localization"), outputDestination);
 //            if (jsonObj.getString("image").equals("")){
