@@ -18,6 +18,8 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
 
@@ -35,6 +37,7 @@ public class AddAgreementFrame extends JFrame{
     private AgreementDbTable agreementDbTable;
     private JComboBox chainList, storeList, productTypeList, productList;
     private DefaultComboBoxModel modelStore, modelProduct;
+    private String dateTime;
 
     private HashMap<String, String> generateListChain (ResultSet selectMethod){
         ResultSet resultSet = selectMethod;
@@ -305,6 +308,9 @@ public class AddAgreementFrame extends JFrame{
         }
 
         //add data into agreement
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss");
+        Date date = new Date();
+        dateTime = dateFormat.format(date);
         agreementDbTable.insertAgreement(storeId);
         try {
             resSet = agreementDbTable.selectAgreementID(storeId);

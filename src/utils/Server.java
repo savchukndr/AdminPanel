@@ -95,14 +95,13 @@ public class Server {
         }
     }
 
-    private String runPython()
-    { //need to call myscript.py and also pass arg1 as its arguments.
-        //and also myscript.py path is in C:\Demo\myscript.py
-
+    private String runPython(String key_image, String shelf)
+    {
         String[] cmd = {
                 "C:\\Users\\savch\\PycharmProjects\\template-matcher\\venv\\Scripts\\python.exe",
                 "C:\\Users\\savch\\PycharmProjects\\template-matcher\\main.py",
-                "baba"
+                key_image,
+                shelf,
         };
         try {
             Runtime.getRuntime().exec(cmd);
@@ -136,13 +135,14 @@ public class Server {
             } catch (SQLException e1) {
                 e1.printStackTrace();
             }
+
+            //Get image key for Redis
             String date = jsonObj.getString("date");
             String login = jsonObj.getString("login");
             String imageId = date + "_" + login + "_" + agreementId;
-            System.out.println(date + "_" + login + "_" + agreementId);
+            System.out.println(imageId);
+            System.out.println(jsonObj.getString("shelf"));
             //----------------
-
-
             if (jsonObj.getString("image").equals("")){
                 UpdateServerStatusWindow("!!!! WARNING !!!", outputDestination);
                 UpdateServerStatusWindow("--- NO IMAGE ---", outputDestination);
@@ -152,13 +152,17 @@ public class Server {
                 redisUtils.insertImageIntoDB(imageId, jsonObj.getString("image"));
                 UpdateServerStatusWindow("photo path: " + photoPath, outputDestination);
             }
+
+            //Update server window
             UpdateServerStatusWindow("Time stamp: " + jsonObj.getString("date"), outputDestination);
             UpdateServerStatusWindow("login: " + jsonObj.getString("login"), outputDestination);
             UpdateServerStatusWindow("agreement: " + jsonObj.getString("agreement"), outputDestination);
-            //TODO: start python algorithm
+            UpdateServerStatusWindow("localization: " + jsonObj.getString("localization"), outputDestination);
+            UpdateServerStatusWindow("shelf: " + jsonObj.getString("shelf"), outputDestination);
 
-            //-------
-            runPython();
+            //Run object recognition
+            UpdateServerStatusWindow("Image recognition started.", outputDestination);
+            runPython(imageId, jsonObj.getString("shelf"));
             //-------
 
 //            UpdateServerStatusWindow("name: " + jsonObj.getString("name"), outputDestination);
