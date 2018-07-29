@@ -8,6 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 import database.ReportDbTable;
 import dialog_frames.ShowImageFrame;
@@ -21,6 +22,7 @@ import dialog_frames.ShowImageFrame;
 public class SearchTablePanel extends JPanel {
 
     private static final long serialVersionUID = 4L;
+    private JTable table;
 
     /**
      * Create the panel.
@@ -57,7 +59,7 @@ public class SearchTablePanel extends JPanel {
         searchTextField.setPreferredSize( new Dimension( 200, 27) );
 
         // Adding scroll to main Text Area
-        JTable table = new JTable();
+        table = new JTable();
 
         JScrollPane scrollTable=new JScrollPane(table);
         scrollTable.setViewportView(table);
@@ -84,6 +86,8 @@ public class SearchTablePanel extends JPanel {
                         return String.class;
                     case 7:
                         return String.class;
+                    case 8:
+                        return String.class;
 
                     default:
                         return String.class;
@@ -101,6 +105,7 @@ public class SearchTablePanel extends JPanel {
         model.addColumn("Visibility distributor");
         model.addColumn("Localization");
         model.addColumn("Agreement title");
+        model.addColumn("Image ID");
 
         ReportDbTable reportDbTable = new ReportDbTable();
         try {
@@ -116,6 +121,7 @@ public class SearchTablePanel extends JPanel {
                 reportList.add(resultSet.getString("distributor_visibility"));
                 reportList.add(resultSet.getString("localization"));
                 reportList.add(resultSet.getString("agreement_title"));
+                reportList.add(resultSet.getString("image_id"));
                 searchMap.put(resultSet.getString("id_result"), reportList);
             }
             int count = 0;
@@ -130,6 +136,7 @@ public class SearchTablePanel extends JPanel {
                 model.setValueAt(searchMap.get(key).get(5), count, 6);
                 model.setValueAt(searchMap.get(key).get(6), count, 7);
                 model.setValueAt(searchMap.get(key).get(7), count, 8);
+                model.setValueAt(searchMap.get(key).get(8), count, 9);
                 count++;
             }
         } catch (NullPointerException | SQLException e) {
@@ -172,8 +179,20 @@ public class SearchTablePanel extends JPanel {
     }
 
     private void showActionPerformed(ActionEvent e) {
-        JFrame showFrame = new ShowImageFrame();
-        showFrame.show();
+        HashSet<Boolean> checkSet = new HashSet<>();
+        for (int i = 0; i < table.getRowCount(); i++) {
+            Boolean checked = Boolean.valueOf(table.getValueAt(i, 0).toString());
+            String image_id = table.getValueAt(i, 9).toString();
+
+            //DISPLAY
+            if (checked) {
+                JFrame showFrame = new ShowImageFrame(image_id);
+                showFrame.show();
+            } else {
+                checkSet.add(checked);
+            }
+        }
+
     }
 
 }
