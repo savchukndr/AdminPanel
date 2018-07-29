@@ -12,25 +12,24 @@ import gui.UserFrame;
 public class Main {
 
     private static MainFrame mainFrame;
-    private static UserFrame userFrame;
 
 
     public static MainFrame getMainFrame() {
         return mainFrame;
     }
 
-    public static void main(String args[]){
+    public static void main(String args[]) {
         Main.goToMainFrame();
         Main.goToUserFrame();
     }
 
-    public static void goToMainFrame(){
+    private static void goToMainFrame() {
         mainFrame = new MainFrame();
         mainFrame.show();
     }
 
-    public static void goToUserFrame(){
-        userFrame = new UserFrame();
+    private static void goToUserFrame() {
+        UserFrame userFrame = new UserFrame();
         userFrame.show();
     }
 

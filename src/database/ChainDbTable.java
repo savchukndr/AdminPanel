@@ -4,8 +4,6 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Andrii Savchuk on 27.05.2018.
@@ -16,19 +14,14 @@ import java.util.List;
 public class ChainDbTable {
     private Connection conn;
     private Statement stmt;
-    private Connector connect;
 
-    public ChainDbTable(){
-        connect = new Connector();
+    public ChainDbTable() {
+        Connector connect = new Connector();
         connect.connect();
         conn = connect.getConn();
     }
 
-    public Connection getConn() {
-        return conn;
-    }
-
-    public void createTable(){
+    public void createTable() {
         try {
             stmt = conn.createStatement();
             String sql = "CREATE TABLE IF NOT EXISTS chain(" +
@@ -40,7 +33,7 @@ public class ChainDbTable {
         }
     }
 
-    public void insert(String chainName){
+    public void insert(String chainName) {
         try {
             stmt = conn.createStatement();
             String sql = "INSERT INTO chain(name) VALUES('" + chainName + "');";
@@ -50,7 +43,7 @@ public class ChainDbTable {
         }
     }
 
-    public ResultSet selectAll(){
+    public ResultSet selectAll() {
         ResultSet resultSet = null;
         try {
             stmt = conn.createStatement();
@@ -61,7 +54,7 @@ public class ChainDbTable {
         return resultSet;
     }
 
-    public void deleteRow(String chainName){
+    public void deleteRow(String chainName) {
         //TODO: delete from chain and all rows from store tables
         try {
             stmt = conn.createStatement();

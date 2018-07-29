@@ -10,17 +10,15 @@ import gui_tables.*;
  * If you will have any questions, please
  * contact via email (savchukndr@gmail.com)
  */
-public class ReportPanel extends JPanel{
+public class ReportPanel extends JPanel {
 
     private static final long serialVersionUID = 4L;
-    private ReportTablePanel reportTablePanel;
 
     /**
      * Create the panel.
-
      */
     public ReportPanel() {
-        reportTablePanel = new ReportTablePanel();
+        ReportTablePanel reportTablePanel = new ReportTablePanel();
         add(reportTablePanel);
     }
 }

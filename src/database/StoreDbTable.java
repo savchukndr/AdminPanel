@@ -14,19 +14,14 @@ import java.sql.Statement;
 public class StoreDbTable {
     private Connection conn;
     private Statement stmt;
-    private Connector connect;
 
-    public StoreDbTable(){
-        connect = new Connector();
+    public StoreDbTable() {
+        Connector connect = new Connector();
         connect.connect();
         conn = connect.getConn();
     }
 
-    public Connection getConn() {
-        return conn;
-    }
-
-    public void createTable(){
+    public void createTable() {
         try {
             stmt = conn.createStatement();
             String sql = "CREATE TABLE IF NOT EXISTS store(" +
@@ -39,7 +34,7 @@ public class StoreDbTable {
         }
     }
 
-    public void insert(String nameChain, String store){
+    public void insert(String nameChain, String store) {
         try {
             stmt = conn.createStatement();
             String sql = "INSERT INTO store(name_chain, store) VALUES('" + nameChain + "','" + store + "');";
@@ -49,7 +44,7 @@ public class StoreDbTable {
         }
     }
 
-    public ResultSet selectAll(){
+    public ResultSet selectAll() {
         ResultSet resultSet = null;
         try {
             stmt = conn.createStatement();
@@ -60,8 +55,7 @@ public class StoreDbTable {
         return resultSet;
     }
 
-    public void deleteRow(String storeId){
-        //TODO: delete from chain and all rows from store tables
+    public void deleteRow(String storeId) {
         try {
             stmt = conn.createStatement();
             String sql = "DELETE FROM store WHERE id_store = " + storeId + ";";

@@ -1,24 +1,12 @@
 package dialog_frames;
 
-//import database.AgreementDbTable;
 import database.AgreementDbTable;
-import main.Main;
-import gui.MainFrame;
-import gui_panels.AgreementPanel;
-import gui_tables.AgreementTablePanel;
-
-import org.mindrot.jbcrypt.BCrypt;
-import redis.clients.jedis.Jedis;
-import utils.AESCrypt;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import javax.swing.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.*;
-import java.util.List;
-
 
 /**
  * Created by Andrii Savchuk on 26.04.2018.
@@ -27,28 +15,8 @@ import java.util.List;
  * contact via email (savchukndr@gmail.com)
  */
 public class ShowAgreementsFrame extends JFrame{
-    private JLabel agreementTitleLabel,
-            chainStoreLabel,
-            storeLabel,
-            productTypeLabel,
-            productLabel,
-            productCountLabel,
-            shelfPositionLabel,
-            agreementTitleTextLabel,
-            chainStoreTextLabel,
-            storeTextLabel,
-            productTypeTextLabel,
-            productTextLabel,
-            productCountTextLabel,
-            shelfPositionTextLabel;
-    private AgreementTablePanel agreementTablePanel;
-    private AgreementDbTable agreementDbTable;
-    private HashMap<String, ArrayList<String>> agreementMap;
-    private String agreementId;
 
-    public ShowAgreementsFrame(AgreementTablePanel agreementTablePanel, String agreementId){
-        this.agreementTablePanel = agreementTablePanel;
-        this.agreementId = agreementId;
+    public ShowAgreementsFrame(String agreementId){
 
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
@@ -58,37 +26,36 @@ public class ShowAgreementsFrame extends JFrame{
         panelLeft.setLayout(new GridBagLayout());
 
         //Labels
-        agreementTitleLabel = new JLabel();
+        JLabel agreementTitleLabel = new JLabel();
         agreementTitleLabel.setText("Title:");
-        chainStoreLabel = new JLabel();
+        JLabel chainStoreLabel = new JLabel();
         chainStoreLabel.setText("Chain Store:");
-        storeLabel = new JLabel();
+        JLabel storeLabel = new JLabel();
         storeLabel.setText("Store:");
-        productTypeLabel = new JLabel();
+        JLabel productTypeLabel = new JLabel();
         productTypeLabel.setText("Product type:");
-        productLabel = new JLabel();
+        JLabel productLabel = new JLabel();
         productLabel.setText("Product:");
-        productCountLabel = new JLabel();
+        JLabel productCountLabel = new JLabel();
         productCountLabel.setText("Count:");
-        shelfPositionLabel = new JLabel();
+        JLabel shelfPositionLabel = new JLabel();
         shelfPositionLabel.setText("Shelf Position:");
 
 
 
         //Text Labels
-        agreementTitleTextLabel = new JLabel();
-        chainStoreTextLabel = new JLabel();
-        storeTextLabel = new JLabel();
-        productTypeTextLabel = new JLabel();
-        productTextLabel = new JLabel();
-        productCountTextLabel = new JLabel();
-        shelfPositionTextLabel = new JLabel();
+        JLabel agreementTitleTextLabel = new JLabel();
+        JLabel chainStoreTextLabel = new JLabel();
+        JLabel storeTextLabel = new JLabel();
+        JLabel productTypeTextLabel = new JLabel();
+        JLabel productTextLabel = new JLabel();
+        JLabel productCountTextLabel = new JLabel();
+        JLabel shelfPositionTextLabel = new JLabel();
 
         // Read from data base
-        agreementDbTable = new AgreementDbTable();
-        agreementMap = new HashMap<>();
+        AgreementDbTable agreementDbTable = new AgreementDbTable();
         try {
-            ResultSet resultSet = agreementDbTable.selectAgreementDataByID(this.agreementId);
+            ResultSet resultSet = agreementDbTable.selectAgreementDataByID(agreementId);
             while(resultSet.next()){
                 agreementTitleTextLabel.setText(resultSet.getString("agreement_title"));
                 chainStoreTextLabel.setText(resultSet.getString("chain_title"));

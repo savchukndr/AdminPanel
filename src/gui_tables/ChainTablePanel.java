@@ -2,7 +2,6 @@ package gui_tables;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -16,15 +15,13 @@ import gui.MainFrame;
 import gui_panels.ChainPanel;
 import main.Main;
 
-public class ChainTablePanel extends JPanel{
+public class ChainTablePanel extends JPanel {
 
     private JTable table;
-    private AddChainFrame dialogFrame;
     private ChainDbTable chainDbTable;
-    private HashMap<String, String> chainMap;
 
     //CONSTRUCTOR
-    public ChainTablePanel(){
+    public ChainTablePanel() {
         setLayout(new BorderLayout());
         JPanel panelTop = new JPanel(); // EventQueue.invokeLater(() -> panelTop = new JPanel());
         panelTop.setLayout(new GridBagLayout());
@@ -38,7 +35,7 @@ public class ChainTablePanel extends JPanel{
 
         table = new JTable();
 
-        JScrollPane scrollTable=new JScrollPane(table);
+        JScrollPane scrollTable = new JScrollPane(table);
         scrollTable.setViewportView(table);
 
         panelTop.add(scrollTable);
@@ -46,12 +43,9 @@ public class ChainTablePanel extends JPanel{
         panelBottom.add(buttonAddChain);
 
         //THE MODEL OF OUR TABLE
-        DefaultTableModel model=new DefaultTableModel()
-        {
-            public Class<?> getColumnClass(int column)
-            {
-                switch(column)
-                {
+        DefaultTableModel model = new DefaultTableModel() {
+            public Class<?> getColumnClass(int column) {
+                switch (column) {
                     case 0:
                         return Boolean.class;
                     case 1:
@@ -74,36 +68,35 @@ public class ChainTablePanel extends JPanel{
         chainDbTable = new ChainDbTable();
         try {
             ResultSet resultSet = chainDbTable.selectAll();
-            chainMap = new HashMap<>();
-            while(resultSet.next()){
+            HashMap<String, String> chainMap = new HashMap<>();
+            while (resultSet.next()) {
                 chainMap.put(resultSet.getString("id"), resultSet.getString("name").trim());
             }
             //THE ROW
             int count = 0;
-            for (String key: chainMap.keySet()) {
+            for (String key : chainMap.keySet()) {
                 model.addRow(new Object[0]);
-                model.setValueAt(false,count,0);
+                model.setValueAt(false, count, 0);
                 model.setValueAt(key, count, 1);
                 model.setValueAt(chainMap.get(key), count, 2);
                 count++;
             }
-        } catch (NullPointerException | SQLException ignored) {}
+        } catch (NullPointerException | SQLException ignored) {
+        }
 
         //ADD BUTTON TO FORM
-        buttonDeleteChain.setBounds(20,30,130,30);
+        buttonDeleteChain.setBounds(20, 30, 130, 30);
         add(panelTop, BorderLayout.CENTER);
         add(panelBottom, BorderLayout.SOUTH);
     }
 
-    private void deleteActionPerformed(ActionEvent e){
-        for(int i=0;i<table.getRowCount();i++)
-        {
-            Boolean checked=Boolean.valueOf(table.getValueAt(i, 0).toString());
+    private void deleteActionPerformed(ActionEvent e) {
+        for (int i = 0; i < table.getRowCount(); i++) {
+            Boolean checked = Boolean.valueOf(table.getValueAt(i, 0).toString());
             String chainId = table.getValueAt(i, 2).toString();
 
             //DISPLAY
-            if(checked)
-            {
+            if (checked) {
                 chainDbTable.deleteRow(chainId);
                 JOptionPane.showMessageDialog(null, "Deleted: " + chainId);
             }
@@ -117,8 +110,8 @@ public class ChainTablePanel extends JPanel{
         chainPanel.add(new ChainTablePanel());
     }
 
-    private void addActionPerformed(ActionEvent e){
-        dialogFrame = new AddChainFrame(this);
+    private void addActionPerformed(ActionEvent e) {
+        AddChainFrame dialogFrame = new AddChainFrame(this);
         dialogFrame.show();
     }
 }

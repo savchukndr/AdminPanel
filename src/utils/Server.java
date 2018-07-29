@@ -3,7 +3,6 @@ package utils;
 import database.AgreementDbTable;
 import org.json.JSONException;
 import org.json.JSONObject;
-import redis.clients.jedis.Jedis;
 
 import javax.swing.*;
 import java.io.*;
@@ -28,14 +27,10 @@ public class Server {
     private BufferedWriter out = null;
     private boolean running = true;
     private String CLIENT_IP = "";
-    private final int CLIENT_PORT = 1996;
-    private Jedis jedis;
-    private RedisUtils mapRedisObject;
-    private List<String> keyList;
     private AgreementDbTable agreementDbTable;
     private String photoPath;
 
-    public Server(JTextArea outputDestination, int port){
+    public Server(JTextArea outputDestination, int port) {
         this.port = port;
         this.outputDestination = outputDestination;
     }
@@ -48,12 +43,10 @@ public class Server {
     }
 
 
-    private synchronized void UpdateServerStatusWindow(String message, JTextArea destination){
-        try
-        {
+    private synchronized void UpdateServerStatusWindow(String message, JTextArea destination) {
+        try {
             destination.append(message + "\n");
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "There was an error updating the server     message output window in the TCP Listner!");
             JOptionPane.showMessageDialog(null, e);
 
@@ -61,25 +54,25 @@ public class Server {
 
     }
 
-    public synchronized void stop(){
+    public synchronized void stop() {
         if (thread == null) return;
         running = false;
-        if (serverSocket != null){
+        if (serverSocket != null) {
             try {
                 serverSocket.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-            thread = null;
+        thread = null;
     }
 
-    private synchronized void jsonHandler(String stringMesssage){
+    private synchronized void jsonHandler(String stringMesssage) {
         try {
             out = new BufferedWriter(new FileWriter("C:\\test\\test.txt"));
             try {
                 JSONObject jsonObj = new JSONObject(stringMesssage);
-                if (!Boolean.valueOf(jsonObj.getString("updateUserDb"))){
+                if (!Boolean.valueOf(jsonObj.getString("updateUserDb"))) {
                     orderData(jsonObj);
                 } else {
                     updateSQL(jsonObj);
@@ -88,15 +81,12 @@ public class Server {
                 UpdateServerStatusWindow(e.toString(), outputDestination);
             }
             out.close();
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             UpdateServerStatusWindow(e.toString(), outputDestination);
         }
     }
 
-    private String runPython(String key_image, String shelf)
-    {
+    private String runPython(String key_image, String shelf) {
         String[] cmd = {
                 "C:\\Users\\savch\\PycharmProjects\\template-matcher\\venv\\Scripts\\python.exe",
                 "C:\\Users\\savch\\PycharmProjects\\template-matcher\\main.py",
@@ -111,7 +101,7 @@ public class Server {
         return "Image processing started";
     }
 
-    private synchronized void orderData(JSONObject jsonObj){
+    private synchronized void orderData(JSONObject jsonObj) {
         agreementDbTable = new AgreementDbTable();
         try {
             if (!jsonObj.getString("image").equals("")) {
@@ -129,7 +119,7 @@ public class Server {
             int agreementId = 0;
             try {
                 resSet = agreementDbTable.selectAgreementIDbyTittle(jsonObj.getString("agreement"));
-                while(resSet.next()){
+                while (resSet.next()) {
                     agreementId = Integer.parseInt(resSet.getString("id_agreement"));
                 }
             } catch (SQLException e1) {
@@ -143,11 +133,11 @@ public class Server {
             System.out.println(imageId);
             System.out.println(jsonObj.getString("shelf"));
             //----------------
-            if (jsonObj.getString("image").equals("")){
+            if (jsonObj.getString("image").equals("")) {
                 UpdateServerStatusWindow("!!!! WARNING !!!", outputDestination);
                 UpdateServerStatusWindow("--- NO IMAGE ---", outputDestination);
                 UpdateServerStatusWindow("!!!! WARNING !!!", outputDestination);
-            }else {
+            } else {
                 RedisUtils redisUtils = new RedisUtils();
                 redisUtils.insertImageIntoDB(imageId, jsonObj.getString("image"));
                 UpdateServerStatusWindow("photo path: " + photoPath, outputDestination);
@@ -180,13 +170,33 @@ public class Server {
         }
     }
 
-    private synchronized void updateSQL(JSONObject jsonObj){
+    private synchronized void updateSQL(JSONObject jsonObj) {
         try {
             UpdateServerStatusWindow(jsonObj.getString("greeting"), outputDestination);
             UpdateServerStatusWindow("Sending updates on device...", outputDestination);
-            String jsonSTR = createRedisdbMessage().toString();
+            JSONObject json = new JSONObject();
+            JSONObject jsonAgreement = new JSONObject();
+
+            agreementDbTable = new AgreementDbTable();
+            ResultSet resultSet = agreementDbTable.selectAll();
+            try {
+                while (resultSet.next()) {
+                    try {
+                        jsonAgreement.put(resultSet.getString("id_agreement_data"), resultSet.getString("title"));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            } catch (SQLException e1) {
+                e1.printStackTrace();
+            }
+
+            json.put("agreementDB", jsonAgreement);
+            json.put("employeeDB", createRedisdbMessage());
+            String jsonSTR = json.toString();
             byte[] jsonByteArr = jsonSTR.getBytes();
             try {
+                int CLIENT_PORT = 1996;
                 Socket socket = new Socket(CLIENT_IP, CLIENT_PORT);
                 DataOutputStream outStream = new DataOutputStream(socket.getOutputStream());
                 outStream.writeInt(jsonByteArr.length);
@@ -195,28 +205,27 @@ public class Server {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            UpdateServerStatusWindow("Updates sent...", outputDestination);
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        UpdateServerStatusWindow("Updates sent...", outputDestination);
     }
 
-    private JSONObject createRedisdbMessage(){
-        jedis = new Jedis("localhost");
-        mapRedisObject = new RedisUtils();
-        keyList = mapRedisObject.getKeyList();
+    private JSONObject createRedisdbMessage() {
+        RedisUtils mapRedisObject = new RedisUtils();
+        List<String> keyList = mapRedisObject.getKeyList();
         return mapRedisObject.generateJsonObject(keyList);
     }
 
-    class SocketThread implements Runnable{
+    class SocketThread implements Runnable {
         @Override
-        public void run () {
+        public void run() {
             orderDataListener();
         }
 
-        private void orderDataListener(){
+        private void orderDataListener() {
             running = true;
-            while (running){
+            while (running) {
                 UpdateServerStatusWindow("Waiting for message", outputDestination);
                 try {
                     serverSocket = new ServerSocket(port);
@@ -227,7 +236,7 @@ public class Server {
                     DataInputStream inStream = new DataInputStream(clientSocket.getInputStream());
                     int length = inStream.readInt();
                     String stringMessage = "";// read length of incoming message
-                    if(length>0) {
+                    if (length > 0) {
                         byte[] message = new byte[length];
                         inStream.readFully(message, 0, message.length); // read the message
                         stringMessage = new String(message);
@@ -239,9 +248,10 @@ public class Server {
                 UpdateServerStatusWindow("", outputDestination);
                 try {
                     serverSocket.close();
-                    try{
+                    try {
                         clientSocket.close();
-                    }catch (NullPointerException ignored){}
+                    } catch (NullPointerException ignored) {
+                    }
                 } catch (IOException e) {
                     UpdateServerStatusWindow("Server stopped.", outputDestination);
                 }

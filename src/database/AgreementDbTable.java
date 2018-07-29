@@ -15,17 +15,13 @@ public class AgreementDbTable {
     private Connection conn;
     private Statement stmt;
 
-    public AgreementDbTable(){
+    public AgreementDbTable() {
         Connector connect = new Connector();
         connect.connect();
         conn = connect.getConn();
     }
 
-    public Connection getConn() {
-        return conn;
-    }
-
-    public ResultSet selectAgreementData(){
+    public ResultSet selectAgreementData() {
         ResultSet resultSet = null;
         try {
             stmt = conn.createStatement();
@@ -54,7 +50,7 @@ public class AgreementDbTable {
         return resultSet;
     }
 
-    public ResultSet selectAgreementDataByID(String agreementId){
+    public ResultSet selectAgreementDataByID(String agreementId) {
         ResultSet resultSet = null;
         try {
             stmt = conn.createStatement();
@@ -84,7 +80,7 @@ public class AgreementDbTable {
         return resultSet;
     }
 
-    public ResultSet selectAll(){
+    public ResultSet selectAll() {
         ResultSet resultSet = null;
         try {
             stmt = conn.createStatement();
@@ -95,7 +91,7 @@ public class AgreementDbTable {
         return resultSet;
     }
 
-    public ResultSet selectChain(){
+    public ResultSet selectChain() {
         ResultSet resultSet = null;
         try {
             stmt = conn.createStatement();
@@ -106,7 +102,7 @@ public class AgreementDbTable {
         return resultSet;
     }
 
-    public ResultSet selectStore(String idChain){
+    public ResultSet selectStore(String idChain) {
         ResultSet resultSet = null;
         try {
             stmt = conn.createStatement();
@@ -117,7 +113,7 @@ public class AgreementDbTable {
         return resultSet;
     }
 
-    public ResultSet selectStoreID(String titleChain){
+    public ResultSet selectStoreID(String titleChain) {
         ResultSet resultSet = null;
         try {
             stmt = conn.createStatement();
@@ -128,7 +124,7 @@ public class AgreementDbTable {
         return resultSet;
     }
 
-    public ResultSet selectProductType(){
+    public ResultSet selectProductType() {
         ResultSet resultSet = null;
         try {
             stmt = conn.createStatement();
@@ -139,7 +135,7 @@ public class AgreementDbTable {
         return resultSet;
     }
 
-    public ResultSet selectProduct(String idProductTypeSearch){
+    public ResultSet selectProduct(String idProductTypeSearch) {
         ResultSet resultSet = null;
         try {
             stmt = conn.createStatement();
@@ -150,7 +146,7 @@ public class AgreementDbTable {
         return resultSet;
     }
 
-    public ResultSet selectProductID(String titleProduct){
+    public ResultSet selectProductID(String titleProduct) {
         ResultSet resultSet = null;
         try {
             stmt = conn.createStatement();
@@ -161,7 +157,7 @@ public class AgreementDbTable {
         return resultSet;
     }
 
-    public void insertAgreement(int id_store){
+    public void insertAgreement(int id_store) {
         try {
             stmt = conn.createStatement();
             String sql = "INSERT INTO agreement(id_store) VALUES(" + id_store + ");";
@@ -171,7 +167,7 @@ public class AgreementDbTable {
         }
     }
 
-    public ResultSet selectAgreementID(int id_store){
+    public ResultSet selectAgreementID(int id_store) {
         ResultSet resultSet = null;
         try {
             stmt = conn.createStatement();
@@ -182,7 +178,7 @@ public class AgreementDbTable {
         return resultSet;
     }
 
-    public ResultSet selectAgreementIDbyTittle(String title){
+    public ResultSet selectAgreementIDbyTittle(String title) {
         ResultSet resultSet = null;
         try {
             stmt = conn.createStatement();
@@ -193,7 +189,7 @@ public class AgreementDbTable {
         return resultSet;
     }
 
-    public void insertAgreementData(String title, int productCount, int productShelfPosition, int productId, int agreementId){
+    public void insertAgreementData(String title, int productCount, int productShelfPosition, int productId, int agreementId) {
         try {
             stmt = conn.createStatement();
             String sql = "INSERT INTO agreement_data( " +
@@ -213,7 +209,7 @@ public class AgreementDbTable {
         }
     }
 
-    public void deleteRow(String agreementId){
+    public void deleteRow(String agreementId) {
         try {
             stmt = conn.createStatement();
             String deleteAgreementDataSql = "DELETE\n" +

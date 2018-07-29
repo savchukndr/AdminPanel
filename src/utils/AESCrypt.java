@@ -12,23 +12,20 @@ import java.util.Base64;
  * If you will have any cuastion, please
  * contact via email (savchukndr@gmail.com)
  */
-public class AESCrypt
-{
+public class AESCrypt {
     private static final String ALGORITHM = "AES";
     private static final String KEY = "1Hbfh667adfDEJ78";
 
-    public static String encrypt(String value) throws Exception
-    {
+    public static String encrypt(String value) throws Exception {
         Key key = generateKey();
         Cipher cipher = Cipher.getInstance(AESCrypt.ALGORITHM);
         cipher.init(Cipher.ENCRYPT_MODE, key);
-        byte [] encryptedByteValue = cipher.doFinal(value.getBytes("utf-8"));
+        byte[] encryptedByteValue = cipher.doFinal(value.getBytes("utf-8"));
         return Base64.getEncoder().encodeToString(encryptedByteValue);
 
     }
 
-    private static Key generateKey() throws Exception
-    {
-        return new SecretKeySpec(AESCrypt.KEY.getBytes(),AESCrypt.ALGORITHM);
+    private static Key generateKey() throws Exception {
+        return new SecretKeySpec(AESCrypt.KEY.getBytes(), AESCrypt.ALGORITHM);
     }
 }

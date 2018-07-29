@@ -21,40 +21,8 @@ public class UserFrame {
 
     private JFrame frame;
     private JPanel panel;
-    private ActionListener actionListener;
-    private EmployeePanel employeePanel;
-    private StorePanel storePanel;
-    private ChainPanel chainPanel;
-    private AgreementPanel agreementPanel;
-    private ReportPanel reportPanel;
-    private MainPanel mainPanel;
-    private SearchPanel searchPanel;
 
-    public EmployeePanel getEmployeePanel() {
-        return employeePanel;
-    }
-
-    public StorePanel getStorePanel() {
-        return storePanel;
-    }
-
-    public ChainPanel getChainPanel() {
-        return chainPanel;
-    }
-
-    public AgreementPanel getAgrementPanel() {
-        return agreementPanel;
-    }
-
-    public ReportPanel getReportPanel() {
-        return reportPanel;
-    }
-
-    public SearchPanel getSearchPanel() {
-        return searchPanel;
-    }
-
-    public UserFrame(){
+    public UserFrame() {
 
         initialize();
     }
@@ -72,16 +40,14 @@ public class UserFrame {
         panel = new JPanel();
         panel.setBounds(0, 10, 784, 489);
         panel.setLayout(null);
-        searchPanel = new SearchPanel();
+        SearchPanel searchPanel = new SearchPanel();
         setCurrentPanel(searchPanel);
     }
 
-    private <T extends JPanel> void setCurrentPanel(T t){
+    private <T extends JPanel> void setCurrentPanel(T t) {
         panel = t;
         panel.setBounds(0, 10, 684, 489);
-//		panel.setLayout(null);
         frame.getContentPane().add(panel);
-        //panel.setLayout(null);
         panel.setVisible(true);
         frame.repaint();
         frame.getContentPane().add(panel);
@@ -93,12 +59,5 @@ public class UserFrame {
      */
     public void show() {
         frame.setVisible(true);
-    }
-
-    /**
-     * Dispose MainFrame
-     */
-    public void dispose() {
-        frame.dispose();
     }
 }

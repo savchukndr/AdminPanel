@@ -22,9 +22,6 @@ public class MainPanel extends JPanel {
     private JButton buttonStopServer;
     private aTask task;
     private Server server;
-    private RedisServer redisServer;
-    private Jedis jedis;
-    private int port = 1994;
     private static boolean redisIsStarted = false;
 
     public static boolean isRedisIsStarted() {
@@ -112,12 +109,12 @@ public class MainPanel extends JPanel {
         protected Void doInBackground() throws Exception {
             textArea.setText("");
             try {
-                jedis = new Jedis("localhost");
+                Jedis jedis = new Jedis("localhost");
                 System.out.println(jedis.ping());
                 redisIsStarted = true;
-            }catch (Exception ex) {
+            } catch (Exception ex) {
                 textArea.setText("Redis server started.\n");
-                redisServer = new RedisServer(textArea);
+                RedisServer redisServer = new RedisServer(textArea);
                 try {
                     redisServer.start();
                     redisIsStarted = true;
@@ -126,6 +123,7 @@ public class MainPanel extends JPanel {
                 }
             }
             textArea.append("Server started.\n");
+            int port = 1994;
             server = new Server(textArea, port);
             try {
                 server.start();

@@ -13,14 +13,13 @@ import gui_tables.*;
 public class StorePanel extends JPanel{
 
     private static final long serialVersionUID = 4L;
-    private StoreTablePanel storeTablePanel;
 
     /**
      * Create the panel.
 
      */
     public StorePanel() {
-        storeTablePanel = new StoreTablePanel();
+        StoreTablePanel storeTablePanel = new StoreTablePanel();
         add(storeTablePanel);
     }
 }

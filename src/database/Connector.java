@@ -11,34 +11,34 @@ import java.sql.SQLException;
  * contact via email (savchukndr@gmail.com)
  */
 public class Connector {
-    private String db = "dyplomDB";
-    private String USER = "savchukndr";
-    private String PASS = "savchukao22";
     private Connection conn = null;
-    private String JDBC_DRIVER = "org.postgresql.Driver";
 
-    public void connect(){
-        try{
+    void connect() {
+        try {
+            String JDBC_DRIVER = "org.postgresql.Driver";
             Class.forName(JDBC_DRIVER);
+            String db = "dyplomDB";
             String DB_URL = "jdbc:postgresql://localhost:5432/" + db;
+            String USER = "savchukndr";
+            String PASS = "savchukao22";
             conn = DriverManager.getConnection(DB_URL, USER, PASS);
 
-        } catch ( Exception e ) {
-            System.err.println( e.getClass().getName()+": "+ e.getMessage() );
+        } catch (Exception e) {
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
             System.exit(0);
         }
     }
 
-    public void disconnect(){
-        try{
-            if(conn!=null)
+    public void disconnect() {
+        try {
+            if (conn != null)
                 conn.close();
-        }catch(SQLException sqlEx){
+        } catch (SQLException sqlEx) {
             sqlEx.printStackTrace();
         }
     }
 
-    public Connection getConn() {
+    Connection getConn() {
         return conn;
     }
 }

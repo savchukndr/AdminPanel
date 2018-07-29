@@ -5,9 +5,6 @@ import javax.swing.*;
 import gui_panels.*;
 import gui_panels.MainPanel;
 import main.Main;
-
-import java.awt.SystemColor;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 
@@ -54,19 +51,19 @@ public class MainFrame {
         return searchPanel;
     }
 
-    public MainFrame(){
+    public MainFrame() {
         actionListener = e -> {
             String command = e.getActionCommand();
-            switch (command){
+            switch (command) {
                 case "Main":
                     setCurrentPanel(mainPanel);
                     break;
                 case "Employees":
                     boolean redisIsStarted = MainPanel.isRedisIsStarted();
-                    if (redisIsStarted){
-                    employeePanel = new EmployeePanel();
-                    setCurrentPanel(employeePanel);
-                    }else{
+                    if (redisIsStarted) {
+                        employeePanel = new EmployeePanel();
+                        setCurrentPanel(employeePanel);
+                    } else {
                         JOptionPane.showMessageDialog(null, "Start Server before check Employee Panel.");
                     }
                     break;
@@ -82,8 +79,8 @@ public class MainFrame {
                 case "Stores":
 //                    boolean redisIsStarted = MainPanel.isRedisIsStarted();
 //                    if (redisIsStarted){
-                        storePanel = new StorePanel();
-                        setCurrentPanel(storePanel);
+                    storePanel = new StorePanel();
+                    setCurrentPanel(storePanel);
 //                    }else{
 //                        JOptionPane.showMessageDialog(null, "Start Server before check Employee Panel.");
 //                    }
@@ -188,7 +185,7 @@ public class MainFrame {
         frame.getContentPane().add(logoutBtn);
     }
 
-    private <T extends JPanel> void setCurrentPanel(T t){
+    private <T extends JPanel> void setCurrentPanel(T t) {
         frame.getContentPane().remove(panel);
         panel = t;
         panel.setBounds(0, 45, 684, 489);

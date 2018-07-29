@@ -7,17 +7,12 @@ import gui.MainFrame;
 import gui_panels.StorePanel;
 import gui_tables.StoreTablePanel;
 
-import org.mindrot.jbcrypt.BCrypt;
-import redis.clients.jedis.Jedis;
-import utils.AESCrypt;
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import javax.swing.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
-import java.util.List;
 
 
 /**
@@ -29,11 +24,7 @@ import java.util.List;
 public class AddStoreFrame extends JFrame{
     private JComboBox<String> chainList;
     private JTextField storeTextField;
-    private JLabel chainLabel;
-    private JLabel storeLabel;
     private StoreTablePanel storeTablePanel;
-    private ChainDbTable chainDbTable;
-    private StoreDbTable storeDbTable;
 
     public AddStoreFrame(StoreTablePanel storeTablePanel){
         this.storeTablePanel = storeTablePanel;
@@ -45,13 +36,13 @@ public class AddStoreFrame extends JFrame{
         panelLeft.setLayout(new GridBagLayout());
 
         //Labels
-        chainLabel = new JLabel();
+        JLabel chainLabel = new JLabel();
         chainLabel.setText("Chain Store:");
-        storeLabel = new JLabel();
+        JLabel storeLabel = new JLabel();
         storeLabel.setText("Store:");
 
         //ComboBox
-        chainDbTable = new ChainDbTable();
+        ChainDbTable chainDbTable = new ChainDbTable();
         chainDbTable.createTable();
         ResultSet resultSet = chainDbTable.selectAll();
         ArrayList<String> queryList = new ArrayList<>();
@@ -110,7 +101,7 @@ public class AddStoreFrame extends JFrame{
         if (storeTextField.getText().equals("")){
             JOptionPane.showMessageDialog(null, "Some fields are empty!!!");
         }else {
-            storeDbTable = new StoreDbTable();
+            StoreDbTable storeDbTable = new StoreDbTable();
             storeDbTable.createTable();
             String chainNameSelected = (String) chainList.getSelectedItem();
             storeDbTable.insert(chainNameSelected, storeTextField.getText());

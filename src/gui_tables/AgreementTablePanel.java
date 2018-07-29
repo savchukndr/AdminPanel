@@ -19,16 +19,13 @@ import gui.MainFrame;
 import gui_panels.AgreementPanel;
 import main.Main;
 
-public class AgreementTablePanel extends JPanel{
+public class AgreementTablePanel extends JPanel {
 
     private JTable table;
-    private AddAgreementFrame dialogAddFrame;
-    private ShowAgreementsFrame dialogShowFrame;
     private AgreementDbTable agreementDbTable;
-    private HashMap<String, ArrayList<String>> agreementMap;
 
     //CONSTRUCTOR
-    public AgreementTablePanel(){
+    public AgreementTablePanel() {
         setLayout(new BorderLayout());
         JPanel panelTop = new JPanel(); // EventQueue.invokeLater(() -> panelTop = new JPanel());
         panelTop.setLayout(new GridBagLayout());
@@ -44,7 +41,7 @@ public class AgreementTablePanel extends JPanel{
 
         table = new JTable();
 
-        JScrollPane scrollTable=new JScrollPane(table);
+        JScrollPane scrollTable = new JScrollPane(table);
         scrollTable.setViewportView(table);
 
         panelTop.add(scrollTable);
@@ -54,12 +51,9 @@ public class AgreementTablePanel extends JPanel{
 
 
         //THE MODEL OF OUR TABLE
-        DefaultTableModel model=new DefaultTableModel()
-        {
-            public Class<?> getColumnClass(int column)
-            {
-                switch(column)
-                {
+        DefaultTableModel model = new DefaultTableModel() {
+            public Class<?> getColumnClass(int column) {
+                switch (column) {
                     case 0:
                         return Boolean.class;
                     case 1:
@@ -86,8 +80,8 @@ public class AgreementTablePanel extends JPanel{
         agreementDbTable = new AgreementDbTable();
         try {
             ResultSet resultSet = agreementDbTable.selectAgreementData();
-            agreementMap = new HashMap<>();
-            while(resultSet.next()){
+            HashMap<String, ArrayList<String>> agreementMap = new HashMap<>();
+            while (resultSet.next()) {
                 ArrayList<String> agreementList = new ArrayList<>();
                 agreementList.add(resultSet.getString("agreement_title"));
                 agreementList.add(resultSet.getString("store_title"));
@@ -95,36 +89,34 @@ public class AgreementTablePanel extends JPanel{
             }
             //THE ROW
             int count = 0;
-            for (String key: agreementMap.keySet()) {
+            for (String key : agreementMap.keySet()) {
                 model.addRow(new Object[0]);
-                model.setValueAt(false,count,0);
+                model.setValueAt(false, count, 0);
                 model.setValueAt(key, count, 1);
                 model.setValueAt(agreementMap.get(key).get(0), count, 2);
                 model.setValueAt(agreementMap.get(key).get(1), count, 3);
                 count++;
             }
-        } catch (NullPointerException | SQLException ignored) {}
+        } catch (NullPointerException | SQLException ignored) {
+        }
 
         //ADD BUTTON TO FORM
-        buttonDeleteAgreement.setBounds(20,30,130,30);
+        buttonDeleteAgreement.setBounds(20, 30, 130, 30);
         add(panelTop, BorderLayout.CENTER);
         add(panelBottom, BorderLayout.SOUTH);
     }
 
-    private void showActionPerformed(ActionEvent e){
+    private void showActionPerformed(ActionEvent e) {
         HashSet<Boolean> checkSet = new HashSet<>();
-        for(int i=0;i<table.getRowCount();i++)
-        {
-            Boolean checked=Boolean.valueOf(table.getValueAt(i, 0).toString());
+        for (int i = 0; i < table.getRowCount(); i++) {
+            Boolean checked = Boolean.valueOf(table.getValueAt(i, 0).toString());
             String agreementId = table.getValueAt(i, 1).toString();
 
             //DISPLAY
-            if(checked)
-            {
-                dialogShowFrame = new ShowAgreementsFrame(this, agreementId);
+            if (checked) {
+                ShowAgreementsFrame dialogShowFrame = new ShowAgreementsFrame(agreementId);
                 dialogShowFrame.show();
-            }
-            else{
+            } else {
                 checkSet.add(checked);
             }
         }
@@ -133,19 +125,17 @@ public class AgreementTablePanel extends JPanel{
 //        }
     }
 
-    private void addActionPerformed(ActionEvent e){
-        dialogAddFrame = new AddAgreementFrame(this);
+    private void addActionPerformed(ActionEvent e) {
+        AddAgreementFrame dialogAddFrame = new AddAgreementFrame(this);
         dialogAddFrame.show();
     }
 
-    private void deleteActionPerformed(ActionEvent e){
-        for(int i=0;i<table.getRowCount();i++)
-        {
-            Boolean checked=Boolean.valueOf(table.getValueAt(i, 0).toString());
+    private void deleteActionPerformed(ActionEvent e) {
+        for (int i = 0; i < table.getRowCount(); i++) {
+            Boolean checked = Boolean.valueOf(table.getValueAt(i, 0).toString());
             String agreementId = table.getValueAt(i, 1).toString();
 
-            if(checked)
-            {
+            if (checked) {
                 agreementDbTable.deleteRow(agreementId);
                 JOptionPane.showMessageDialog(null, "Deleted: " + agreementId);
             }

@@ -6,17 +6,12 @@ import gui.MainFrame;
 import gui_panels.ChainPanel;
 import gui_tables.ChainTablePanel;
 
-import org.mindrot.jbcrypt.BCrypt;
-import redis.clients.jedis.Jedis;
-import utils.AESCrypt;
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import javax.swing.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
-import java.util.List;
 
 
 /**
@@ -27,9 +22,7 @@ import java.util.List;
  */
 public class AddChainFrame extends JFrame{
     private JTextField chainTextField;
-    private JLabel chainLabel;
     private ChainTablePanel chainTablePanel;
-    private ChainDbTable chainDbTable;
 
     public AddChainFrame(ChainTablePanel chainTablePanel){
         this.chainTablePanel = chainTablePanel;
@@ -41,7 +34,7 @@ public class AddChainFrame extends JFrame{
         panelLeft.setLayout(new GridBagLayout());
 
         //Labels
-        chainLabel = new JLabel();
+        JLabel chainLabel = new JLabel();
         chainLabel.setText("Chain:");
 
         //Text fields
@@ -84,7 +77,7 @@ public class AddChainFrame extends JFrame{
             JOptionPane.showMessageDialog(null, "Some fields are empty!!!");
         }else {
             //Inserting value into chain table
-            chainDbTable = new ChainDbTable();
+            ChainDbTable chainDbTable = new ChainDbTable();
             chainDbTable.createTable();
             ResultSet resultSet = chainDbTable.selectAll();
             ArrayList<String> queryList = new ArrayList<>();

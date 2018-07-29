@@ -10,17 +10,15 @@ import gui_tables.*;
  * If you will have any questions, please
  * contact via email (savchukndr@gmail.com)
  */
-public class SearchPanel extends JPanel{
+public class SearchPanel extends JPanel {
 
     private static final long serialVersionUID = 4L;
-    private SearchTablePanel searchTablePanel;
 
     /**
      * Create the panel.
-
      */
     public SearchPanel() {
-        searchTablePanel = new SearchTablePanel();
+        SearchTablePanel searchTablePanel = new SearchTablePanel();
         add(searchTablePanel);
     }
 }

@@ -13,23 +13,17 @@ import java.sql.Statement;
  */
 public class ReportDbTable {
     private Connection conn;
-    private Statement stmt;
-    private Connector connect;
 
     public ReportDbTable(){
-        connect = new Connector();
+        Connector connect = new Connector();
         connect.connect();
         conn = connect.getConn();
-    }
-
-    public Connection getConn() {
-        return conn;
     }
 
     public ResultSet selectReport(){
         ResultSet resultSet = null;
         try {
-            stmt = conn.createStatement();
+            Statement stmt = conn.createStatement();
             String sql = "SELECT res.id_result AS id_result,\n" +
                     "        res.date_result AS date_result,\n" +
                     "        agree_data.title AS agreement_title\n" +

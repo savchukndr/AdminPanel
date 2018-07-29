@@ -1,21 +1,15 @@
 package dialog_frames;
 
-//import database.AgreementDbTable;
 import database.AgreementDbTable;
 import main.Main;
 import gui.MainFrame;
 import gui_panels.AgreementPanel;
 import gui_tables.AgreementTablePanel;
 
-import org.mindrot.jbcrypt.BCrypt;
-import redis.clients.jedis.Jedis;
-import utils.AESCrypt;
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import javax.swing.*;
 import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DateFormat;
@@ -32,19 +26,16 @@ import java.util.List;
  */
 public class AddAgreementFrame extends JFrame{
     private JTextField agreementTitleTextField, productCountTextField, shelfPositionTextField;
-    private JLabel agreementTitleLabel, chainStoreLabel, storeLabel, productTypeLabel, productLabel, productCountLabel, shelfPositionLabel;
     private AgreementTablePanel agreementTablePanel;
     private AgreementDbTable agreementDbTable;
     private JComboBox chainList, storeList, productTypeList, productList;
     private DefaultComboBoxModel modelStore, modelProduct;
-    private String dateTime;
 
     private HashMap<String, String> generateListChain (ResultSet selectMethod){
-        ResultSet resultSet = selectMethod;
         HashMap<String, String> map = new HashMap<>();
         try {
-            while(resultSet.next()){
-                map.put(resultSet.getString("title"), resultSet.getString("id_chain").trim());
+            while(selectMethod.next()){
+                map.put(selectMethod.getString("title"), selectMethod.getString("id_chain").trim());
             }
         } catch (SQLException e1) {
             e1.printStackTrace();
@@ -53,15 +44,14 @@ public class AddAgreementFrame extends JFrame{
     }
 
     private HashMap<String, List<String>> generateListStore (ResultSet selectMethod){
-        ResultSet resultSet = selectMethod;
         HashMap<String, List<String>> map = new HashMap<>();
         List<String> list;
         try {
-            while(resultSet.next()){
+            while(selectMethod.next()){
                 list = new ArrayList<>();
-                list.add(resultSet.getString("id_chain"));
-                list.add(resultSet.getString("title"));
-                map.put(resultSet.getString("id_store"), list);
+                list.add(selectMethod.getString("id_chain"));
+                list.add(selectMethod.getString("title"));
+                map.put(selectMethod.getString("id_store"), list);
             }
         } catch (SQLException e1) {
             e1.printStackTrace();
@@ -71,12 +61,11 @@ public class AddAgreementFrame extends JFrame{
     }
 
     private HashMap<String, String> generateListProductType (ResultSet selectMethod){
-        ResultSet resultSet = selectMethod;
         HashMap<String, String> map = new HashMap<>();
         try {
-            while(resultSet.next()){
-                map.put(resultSet.getString("title"), resultSet.getString("id_product_type").trim());
-        }
+            while (selectMethod.next()) {
+                map.put(selectMethod.getString("title"), selectMethod.getString("id_product_type").trim());
+            }
         } catch (SQLException e1) {
             e1.printStackTrace();
         }
@@ -84,18 +73,15 @@ public class AddAgreementFrame extends JFrame{
         return map;
     }
 
-
-
     private HashMap<String, List<String>> generateListProduct (ResultSet selectMethod){
-        ResultSet resultSet = selectMethod;
         HashMap<String, List<String>> map = new HashMap<>();
         List<String> list;
         try {
-            while(resultSet.next()){
+            while(selectMethod.next()){
                 list = new ArrayList<>();
-                list.add(resultSet.getString("id_product_type"));
-                list.add(resultSet.getString("title"));
-                map.put(resultSet.getString("id_product"), list);
+                list.add(selectMethod.getString("id_product_type"));
+                list.add(selectMethod.getString("title"));
+                map.put(selectMethod.getString("id_product"), list);
             }
         } catch (SQLException e1) {
             e1.printStackTrace();
@@ -133,19 +119,19 @@ public class AddAgreementFrame extends JFrame{
         panelLeft.setLayout(new GridBagLayout());
 
         //Labels
-        agreementTitleLabel = new JLabel();
+        JLabel agreementTitleLabel = new JLabel();
         agreementTitleLabel.setText("Title:");
-        chainStoreLabel = new JLabel();
+        JLabel chainStoreLabel = new JLabel();
         chainStoreLabel.setText("Chain Store:");
-        storeLabel = new JLabel();
+        JLabel storeLabel = new JLabel();
         storeLabel.setText("Store:");
-        productTypeLabel = new JLabel();
+        JLabel productTypeLabel = new JLabel();
         productTypeLabel.setText("Product type:");
-        productLabel = new JLabel();
+        JLabel productLabel = new JLabel();
         productLabel.setText("Product:");
-        productCountLabel = new JLabel();
+        JLabel productCountLabel = new JLabel();
         productCountLabel.setText("Count:");
-        shelfPositionLabel = new JLabel();
+        JLabel shelfPositionLabel = new JLabel();
         shelfPositionLabel.setText("Shelf Position:");
 
         //ComboBox
@@ -154,7 +140,6 @@ public class AddAgreementFrame extends JFrame{
         //---------------
         HashMap<String, String> chainMap = generateListChain(agreementDbTable.selectChain());
         String[] chainArray = chainMap.keySet().toArray(new String[0]);
-        System.out.println(chainArray);
         chainList = new JComboBox<>(chainArray);
 
         String selectedChain = (String) chainList.getSelectedItem();
@@ -324,7 +309,7 @@ public class AddAgreementFrame extends JFrame{
                 //add data into agreement
                 DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss");
                 Date date = new Date();
-                dateTime = dateFormat.format(date);
+                String dateTime = dateFormat.format(date);
                 agreementDbTable.insertAgreement(storeId);
                 try {
                     resSet = agreementDbTable.selectAgreementID(storeId);

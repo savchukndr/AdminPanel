@@ -2,14 +2,10 @@ package gui_tables;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.text.DefaultCaret;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.io.IOException;
 
 import dialog_frames.ShowImageFrame;
-import redis.clients.jedis.Jedis;
-import utils.*;
 
 /**
  * Created by Andrii Savchuk on 21.04.2018.
@@ -18,11 +14,6 @@ import utils.*;
  * contact via email (savchukndr@gmail.com)
  */
 public class SearchTablePanel extends JPanel {
-
-    private JButton buttonSearch;
-    private JTextField searchTextField;
-    private JTable table;
-    private JFrame showFrame;
 
     private static final long serialVersionUID = 4L;
 
@@ -47,7 +38,7 @@ public class SearchTablePanel extends JPanel {
         labelListen.setText("Press \"Search\" to start searching:");
 
         // Buttons
-        buttonSearch = new JButton("Search");
+        JButton buttonSearch = new JButton("Search");
         buttonSearch.addActionListener(this::searchActionPerformed);
         buttonSearch.setEnabled(true);
         JButton buttonShowImage = new JButton("Show Image");
@@ -57,19 +48,15 @@ public class SearchTablePanel extends JPanel {
 //        buttonDelete.addActionListener(this::deleteActionPerformed);
 
         //Text fields
-        searchTextField = new JTextField();
+        JTextField searchTextField = new JTextField();
         searchTextField.setPreferredSize( new Dimension( 200, 27) );
 
         // Adding scroll to main Text Area
-
-        table = new JTable();
+        JTable table = new JTable();
 
         JScrollPane scrollTable=new JScrollPane(table);
         scrollTable.setViewportView(table);
 
-//        panelTop.add(scrollTable);
-
-        //THE MODEL OF OUR TABLE
         DefaultTableModel model=new DefaultTableModel()
         {
             public Class<?> getColumnClass(int column)
@@ -177,7 +164,7 @@ public class SearchTablePanel extends JPanel {
     }
 
     private void showActionPerformed(ActionEvent e) {
-        showFrame = new ShowImageFrame();
+        JFrame showFrame = new ShowImageFrame();
         showFrame.show();
     }
 

@@ -9,11 +9,11 @@ import java.io.IOException;
  * If you will have any questions, please
  * contact via email (savchukndr@gmail.com)
  */
-public class RedisServer{
+public class RedisServer {
 
     private JTextArea outputDestination = null;
 
-    public RedisServer(JTextArea outputDestination){
+    public RedisServer(JTextArea outputDestination) {
         this.outputDestination = outputDestination;
     }
 
@@ -23,12 +23,10 @@ public class RedisServer{
         thread.start();
     }
 
-    private synchronized void UpdateServerStatusWindow(String message, JTextArea destination){
-        try
-        {
+    private synchronized void UpdateServerStatusWindow(String message, JTextArea destination) {
+        try {
             destination.append(message + "\n");
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "There was an error updating the server     message output window in the TCP Listner!");
             JOptionPane.showMessageDialog(null, e);
 
@@ -36,9 +34,9 @@ public class RedisServer{
 
     }
 
-    class RedisServerThread implements Runnable{
+    class RedisServerThread implements Runnable {
         @Override
-        public void run(){
+        public void run() {
             try {
                 execCommand();
             } catch (IOException e) {

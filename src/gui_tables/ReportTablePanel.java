@@ -12,17 +12,13 @@ import database.ReportDbTable;
 
 public class ReportTablePanel extends JPanel{
 
-    private JTable table;
-    private ReportDbTable reportDbTable;
-    private HashMap<String, ArrayList<String>> reportMap;
-
     //CONSTRUCTOR
     public ReportTablePanel(){
         setLayout(new BorderLayout());
-        JPanel panelTop = new JPanel(); // EventQueue.invokeLater(() -> panelTop = new JPanel());
+        JPanel panelTop = new JPanel();
         panelTop.setLayout(new GridBagLayout());
 
-        table = new JTable();
+        JTable table = new JTable();
 
         JScrollPane scrollTable=new JScrollPane(table);
         scrollTable.setViewportView(table);
@@ -49,23 +45,21 @@ public class ReportTablePanel extends JPanel{
             }
         };
 
-        //ASSIGN THE MODEL TO TABLE
         table.setModel(model);
         model.addColumn("ID");
         model.addColumn("Date");
         model.addColumn("Agreement title");
 
-        reportDbTable = new ReportDbTable();
+        ReportDbTable reportDbTable = new ReportDbTable();
         try {
             ResultSet resultSet = reportDbTable.selectReport();
-            reportMap = new HashMap<>();
+            HashMap<String, ArrayList<String>> reportMap = new HashMap<>();
             while(resultSet.next()){
                 ArrayList<String> reportList = new ArrayList<>();
                 reportList.add(resultSet.getString("date_result"));
                 reportList.add(resultSet.getString("agreement_title"));
                 reportMap.put(resultSet.getString("id_result"), reportList);
             }
-            //THE ROW
             int count = 0;
             for (String key: reportMap.keySet()) {
                 model.addRow(new Object[0]);

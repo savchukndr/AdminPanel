@@ -10,17 +10,15 @@ import gui_tables.*;
  * If you will have any questions, please
  * contact via email (savchukndr@gmail.com)
  */
-public class AgreementPanel extends JPanel{
+public class AgreementPanel extends JPanel {
 
     private static final long serialVersionUID = 4L;
-    private AgreementTablePanel agreementTablePanel;
 
     /**
      * Create the panel.
-
      */
     public AgreementPanel() {
-        agreementTablePanel = new AgreementTablePanel();
+        AgreementTablePanel agreementTablePanel = new AgreementTablePanel();
         add(agreementTablePanel);
     }
 }
