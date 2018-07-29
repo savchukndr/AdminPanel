@@ -4,7 +4,12 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 
+import database.ReportDbTable;
 import dialog_frames.ShowImageFrame;
 
 /**
@@ -80,53 +85,56 @@ public class SearchTablePanel extends JPanel {
                     case 7:
                         return String.class;
 
-
                     default:
                         return String.class;
                 }
             }
         };
 
-        //ASSIGN THE MODEL TO TABLE
         table.setModel(model);
         model.addColumn("Select");
-        model.addColumn("ID Result");
-        model.addColumn("On shelf");
-        model.addColumn("Localization");
-        model.addColumn("Visability");
-        model.addColumn("Date");
         model.addColumn("Estimation");
-        model.addColumn("Agreement");
+        model.addColumn("Date");
+        model.addColumn("Amount");
+        model.addColumn("Exposition");
+        model.addColumn("Visibility product");
+        model.addColumn("Visibility distributor");
+        model.addColumn("Localization");
+        model.addColumn("Agreement title");
 
-        //TODO: read from data base
-
-        model.addRow(new Object[0]);
-        model.setValueAt(false, 0,0);
-        model.setValueAt(1, 0,1);
-        model.setValueAt("True", 0,2);
-        model.setValueAt("Biedronka 1", 0,3);
-        model.setValueAt("True", 0,4);
-        model.setValueAt("2018/07/12 11:57:33", 0,5);
-        model.setValueAt("Good", 0,6);
-        model.setValueAt("Agreement 1", 0,7);
-
-
-        model.addRow(new Object[0]);
-        model.setValueAt(false, 1,0);
-        model.setValueAt(3, 1,1);
-        model.setValueAt("False", 1,2);
-        model.setValueAt("Biedronka 2", 1,3);
-        model.setValueAt("False", 1,4);
-        model.setValueAt("2018/07/12 13:40:07", 1,5);
-        model.setValueAt("Bad", 1,6);
-        model.setValueAt("Agreement 2", 1,7);
-
-//        for(int i=0; i<3; i++){
-//            model.addRow(new Object[0]);
-//            model.setValueAt(false, i,0);
-//            model.setValueAt(i+1, i,1);
-//            model.setValueAt("Ageement" + String.valueOf(i+1), i,2);
-//        }
+        ReportDbTable reportDbTable = new ReportDbTable();
+        try {
+            ResultSet resultSet = reportDbTable.selectSearch();
+            HashMap<String, ArrayList<String>> searchMap = new HashMap<>();
+            while(resultSet.next()){
+                ArrayList<String> reportList = new ArrayList<>();
+                reportList.add(resultSet.getString("estimation"));
+                reportList.add(resultSet.getString("date_result"));
+                reportList.add(resultSet.getString("product_count"));
+                reportList.add(resultSet.getString("exposition"));
+                reportList.add(resultSet.getString("product_visibility"));
+                reportList.add(resultSet.getString("distributor_visibility"));
+                reportList.add(resultSet.getString("localization"));
+                reportList.add(resultSet.getString("agreement_title"));
+                searchMap.put(resultSet.getString("id_result"), reportList);
+            }
+            int count = 0;
+            for (String key: searchMap.keySet()) {
+                model.addRow(new Object[0]);
+                model.setValueAt(false, count, 0);
+                model.setValueAt(searchMap.get(key).get(0), count, 1);
+                model.setValueAt(searchMap.get(key).get(1), count, 2);
+                model.setValueAt(searchMap.get(key).get(2), count, 3);
+                model.setValueAt(searchMap.get(key).get(3), count, 4);
+                model.setValueAt(searchMap.get(key).get(4), count, 5);
+                model.setValueAt(searchMap.get(key).get(5), count, 6);
+                model.setValueAt(searchMap.get(key).get(6), count, 7);
+                model.setValueAt(searchMap.get(key).get(7), count, 8);
+                count++;
+            }
+        } catch (NullPointerException | SQLException e) {
+            e.printStackTrace();
+        }
 
         add(panelTop, BorderLayout.CENTER);
 

@@ -9,8 +9,8 @@
     </database>
     <schema id="3" parent="2" name="public">
       <ObjectId>2200</ObjectId>
-      <IntrospectionTimestamp>2018-07-28.17:33:39.246</IntrospectionTimestamp>
-      <IntrospectionStateNumber>399115</IntrospectionStateNumber>
+      <IntrospectionTimestamp>2018-07-29.17:40:02.587</IntrospectionTimestamp>
+      <IntrospectionStateNumber>399185</IntrospectionStateNumber>
       <Current>1</Current>
       <Visible>1</Visible>
     </schema>
@@ -45,8 +45,8 @@
       <SequenceIdentity>1</SequenceIdentity>
     </sequence>
     <sequence id="12" parent="3" name="image_processing_result_id_result_seq">
-      <ObjectId>93546</ObjectId>
-      <StateNumber>399115</StateNumber>
+      <ObjectId>101460</ObjectId>
+      <StateNumber>399185</StateNumber>
       <SequenceIdentity>1</SequenceIdentity>
     </sequence>
     <sequence id="13" parent="3" name="product_id_product_seq">
@@ -70,15 +70,15 @@
     </table>
     <table id="17" parent="3" name="agreement_data">
       <ObjectId>93511</ObjectId>
-      <StateNumber>399115</StateNumber>
+      <StateNumber>399185</StateNumber>
     </table>
     <table id="18" parent="3" name="chain">
       <ObjectId>93470</ObjectId>
       <StateNumber>399084</StateNumber>
     </table>
     <table id="19" parent="3" name="image_processing_result">
-      <ObjectId>93548</ObjectId>
-      <StateNumber>399115</StateNumber>
+      <ObjectId>101462</ObjectId>
+      <StateNumber>399185</StateNumber>
     </table>
     <table id="20" parent="3" name="product">
       <ObjectId>93454</ObjectId>
@@ -208,75 +208,75 @@
       <Position>1</Position>
       <DataType>integer|0</DataType>
       <NotNull>1</NotNull>
-      <StateNumber>399115</StateNumber>
+      <StateNumber>399185</StateNumber>
       <DefaultExpression>nextval(&apos;image_processing_result_id_result_seq&apos;::regclass)</DefaultExpression>
     </column>
     <column id="43" parent="19" name="product_count">
       <Position>2</Position>
       <DataType>text|0</DataType>
       <NotNull>1</NotNull>
-      <StateNumber>399115</StateNumber>
+      <StateNumber>399185</StateNumber>
     </column>
     <column id="44" parent="19" name="is_product_on_exposition">
       <Position>3</Position>
       <DataType>text|0</DataType>
       <NotNull>1</NotNull>
-      <StateNumber>399115</StateNumber>
+      <StateNumber>399185</StateNumber>
     </column>
     <column id="45" parent="19" name="product_localization">
       <Position>4</Position>
       <DataType>text|0</DataType>
       <NotNull>1</NotNull>
-      <StateNumber>399115</StateNumber>
+      <StateNumber>399185</StateNumber>
     </column>
     <column id="46" parent="19" name="is_product_visible">
       <Position>5</Position>
       <DataType>text|0</DataType>
       <NotNull>1</NotNull>
-      <StateNumber>399115</StateNumber>
+      <StateNumber>399185</StateNumber>
     </column>
     <column id="47" parent="19" name="is_distributor_visible">
       <Position>6</Position>
       <DataType>text|0</DataType>
       <NotNull>1</NotNull>
-      <StateNumber>399115</StateNumber>
+      <StateNumber>399185</StateNumber>
     </column>
     <column id="48" parent="19" name="date_result">
       <Position>7</Position>
       <DataType>text|0</DataType>
       <NotNull>1</NotNull>
-      <StateNumber>399115</StateNumber>
+      <StateNumber>399185</StateNumber>
     </column>
     <column id="49" parent="19" name="image_proc_estimation">
       <Position>8</Position>
       <DataType>text|0</DataType>
       <NotNull>1</NotNull>
-      <StateNumber>399115</StateNumber>
+      <StateNumber>399185</StateNumber>
     </column>
     <column id="50" parent="19" name="id_image">
       <Position>9</Position>
       <DataType>text|0</DataType>
       <NotNull>1</NotNull>
-      <StateNumber>399115</StateNumber>
+      <StateNumber>399185</StateNumber>
     </column>
     <column id="51" parent="19" name="id_agreement_data">
       <Position>10</Position>
       <DataType>integer|0</DataType>
-      <StateNumber>399115</StateNumber>
+      <StateNumber>399185</StateNumber>
     </column>
     <index id="52" parent="19" name="image_processing_result_pkey">
-      <ObjectId>93555</ObjectId>
+      <ObjectId>101469</ObjectId>
       <ColNames>id_result</ColNames>
       <Unique>1</Unique>
     </index>
     <key id="53" parent="19" name="image_processing_result_pkey">
-      <ObjectId>93556</ObjectId>
+      <ObjectId>101470</ObjectId>
       <ColNames>id_result</ColNames>
       <UnderlyingIndexName>image_processing_result_pkey</UnderlyingIndexName>
       <Primary>1</Primary>
     </key>
     <foreign-key id="54" parent="19" name="image_processing_result_id_agreement_data_fkey">
-      <ObjectId>93557</ObjectId>
+      <ObjectId>101471</ObjectId>
       <ColNames>id_agreement_data</ColNames>
       <RefTableName>agreement_data</RefTableName>
       <RefKeyName>agreement_data_pkey</RefKeyName>
