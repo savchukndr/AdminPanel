@@ -96,7 +96,6 @@ public class ChainTablePanel extends JPanel{
     }
 
     private void deleteActionPerformed(ActionEvent e){
-        // TODO Auto-generated method stub
         for(int i=0;i<table.getRowCount();i++)
         {
             Boolean checked=Boolean.valueOf(table.getValueAt(i, 0).toString());

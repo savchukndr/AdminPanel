@@ -1,6 +1,7 @@
 package dialog_frames;
 
 //import database.AgreementDbTable;
+import database.AgreementDbTable;
 import main.Main;
 import gui.MainFrame;
 import gui_panels.AgreementPanel;
@@ -41,10 +42,13 @@ public class ShowAgreementsFrame extends JFrame{
             productCountTextLabel,
             shelfPositionTextLabel;
     private AgreementTablePanel agreementTablePanel;
-//    private AgreementDbTable agreementDbTable;
+    private AgreementDbTable agreementDbTable;
+    private HashMap<String, ArrayList<String>> agreementMap;
+    private String agreementId;
 
-    public ShowAgreementsFrame(AgreementTablePanel agreementTablePanel){
+    public ShowAgreementsFrame(AgreementTablePanel agreementTablePanel, String agreementId){
         this.agreementTablePanel = agreementTablePanel;
+        this.agreementId = agreementId;
 
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
@@ -70,22 +74,33 @@ public class ShowAgreementsFrame extends JFrame{
         shelfPositionLabel.setText("Shelf Position:");
 
 
+
         //Text Labels
-        //TODO: Read from data base
         agreementTitleTextLabel = new JLabel();
-        agreementTitleTextLabel.setText("Agreement 1");
         chainStoreTextLabel = new JLabel();
-        chainStoreTextLabel.setText("Biedronka");
         storeTextLabel = new JLabel();
-        storeTextLabel.setText("Biedronka 1");
         productTypeTextLabel = new JLabel();
-        productTypeTextLabel.setText("Book");
         productTextLabel = new JLabel();
-        productTextLabel.setText("Java");
         productCountTextLabel = new JLabel();
-        productCountTextLabel.setText("2");
         shelfPositionTextLabel = new JLabel();
-        shelfPositionTextLabel.setText("3");
+
+        // Read from data base
+        agreementDbTable = new AgreementDbTable();
+        agreementMap = new HashMap<>();
+        try {
+            ResultSet resultSet = agreementDbTable.selectAgreementDataByID(this.agreementId);
+            while(resultSet.next()){
+                agreementTitleTextLabel.setText(resultSet.getString("agreement_title"));
+                chainStoreTextLabel.setText(resultSet.getString("chain_title"));
+                storeTextLabel.setText(resultSet.getString("store_title"));
+                productTypeTextLabel.setText(resultSet.getString("product_type_title"));
+                productTextLabel.setText(resultSet.getString("product_title"));
+                productCountTextLabel.setText(resultSet.getString("product_count"));
+                shelfPositionTextLabel.setText(resultSet.getString("shelf_position"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
         //Buttons
         JButton buttonClose = new JButton("Close");

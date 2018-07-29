@@ -337,6 +337,12 @@ public class AddAgreementFrame extends JFrame{
 
                 //add data into agreement_data
                 agreementDbTable.insertAgreementData(agreementTitle, Integer.parseInt(productCount), Integer.parseInt(shelfPosition), productId, agreementId);
+                MainFrame mainFrame = Main.getMainFrame();
+                AgreementPanel agreementPanel = mainFrame.getAgrementPanel();
+                agreementPanel.remove(agreementTablePanel);
+                agreementPanel.revalidate();
+                agreementPanel.repaint();
+                agreementPanel.add(new AgreementTablePanel());
                 this.dispose();
             }else {
                 JOptionPane.showMessageDialog(null, "Agreement with such title already exist!");

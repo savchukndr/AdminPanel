@@ -137,47 +137,40 @@ public class MainFrame {
         frame.setTitle("Admin Application");
 
         JButton buttonMain = new JButton("Main");
-//        buttonMain.setBackground(SystemColor.menu);
         buttonMain.setBounds(10, 10, 100, 20);
         buttonMain.addActionListener(actionListener);
 //        buttonMain.setEnabled(false);
         frame.getContentPane().add(buttonMain);
 
         JButton buttonEmployees = new JButton("Employees");
-//        buttonMain.setBackground(SystemColor.menu);
         buttonEmployees.setBounds(105, 10, 100, 20);
         buttonEmployees.addActionListener(actionListener);
         frame.getContentPane().add(buttonEmployees);
 
         JButton buttonAgreements = new JButton("Agreements");
-//        buttonMain.setBackground(SystemColor.menu);
         buttonAgreements.setBounds(200, 10, 110, 20);
         buttonAgreements.addActionListener(actionListener);
         frame.getContentPane().add(buttonAgreements);
 
         JButton buttonReports = new JButton("Reports");
-//        buttonMain.setBackground(SystemColor.menu);
         buttonReports.setBounds(295, 10, 100, 20);
         buttonReports.addActionListener(actionListener);
         frame.getContentPane().add(buttonReports);
 
         JButton buttonSearch = new JButton("Search");
-//        buttonMain.setBackground(SystemColor.menu);
         buttonSearch.setBounds(390, 10, 100, 20);
         buttonSearch.addActionListener(actionListener);
 //        frame.getContentPane().add(buttonSearch);
 
         JButton buttonChains = new JButton("Chains");
-//        buttonMain.setBackground(SystemColor.menu);
         buttonChains.setBounds(390, 10, 100, 20);
         buttonChains.addActionListener(actionListener);
-        frame.getContentPane().add(buttonChains);
+//        frame.getContentPane().add(buttonChains);
 
         JButton buttonStores = new JButton("Stores");
-//        buttonMain.setBackground(SystemColor.menu);
         buttonStores.setBounds(485, 10, 100, 20);
         buttonStores.addActionListener(actionListener);
-        frame.getContentPane().add(buttonStores);
+//        frame.getContentPane().add(buttonStores);
 
         panel = new JPanel();
         panel.setBounds(0, 72, 784, 489);

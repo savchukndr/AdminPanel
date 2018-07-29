@@ -5,12 +5,15 @@ import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
 //import database.AgreementDbTable;
+import database.AgreementDbTable;
 import dialog_frames.*;
 import gui.MainFrame;
 import gui_panels.AgreementPanel;
@@ -21,8 +24,8 @@ public class AgreementTablePanel extends JPanel{
     private JTable table;
     private AddAgreementFrame dialogAddFrame;
     private ShowAgreementsFrame dialogShowFrame;
-//    private AgreementDbTable agreementDbTable;
-    private HashMap<String, String> agreementMap;
+    private AgreementDbTable agreementDbTable;
+    private HashMap<String, ArrayList<String>> agreementMap;
 
     //CONSTRUCTOR
     public AgreementTablePanel(){
@@ -63,6 +66,8 @@ public class AgreementTablePanel extends JPanel{
                         return String.class;
                     case 2:
                         return String.class;
+                    case 3:
+                        return String.class;
 
                     default:
                         return String.class;
@@ -73,34 +78,32 @@ public class AgreementTablePanel extends JPanel{
         //ASSIGN THE MODEL TO TABLE
         table.setModel(model);
         model.addColumn("Select");
-        model.addColumn("AgreementID");
-        model.addColumn("Agreement");
+        model.addColumn("ID");
+        model.addColumn("Title");
+        model.addColumn("Store");
 
-        for(int i=0; i<3; i++){
-            model.addRow(new Object[0]);
-            model.setValueAt(false, i,0);
-            model.setValueAt(i+1, i,1);
-            model.setValueAt("Ageement" + String.valueOf(i+1), i,2);
-        }
 
-        //TODO: read from data base
-//        agreementDbTable = new AgreementDbTable();
-//        try {
-//            ResultSet resultSet = agreementDbTable.selectAll();
-//            agreementMap = new HashMap<>();
-//            while(resultSet.next()){
-//                agreementMap.put(resultSet.getString("id"), resultSet.getString("name").trim());
-//            }
-//            //THE ROW
-//            int count = 0;
-//            for (String key: agreementMap.keySet()) {
-//                model.addRow(new Object[0]);
-//                model.setValueAt(false,count,0);
-//                model.setValueAt(key, count, 1);
-//                model.setValueAt(agreementMap.get(key), count, 2);
-//                count++;
-//            }
-//        } catch (NullPointerException | SQLException ignored) {}
+        agreementDbTable = new AgreementDbTable();
+        try {
+            ResultSet resultSet = agreementDbTable.selectAgreementData();
+            agreementMap = new HashMap<>();
+            while(resultSet.next()){
+                ArrayList<String> agreementList = new ArrayList<>();
+                agreementList.add(resultSet.getString("agreement_title"));
+                agreementList.add(resultSet.getString("store_title"));
+                agreementMap.put(resultSet.getString("agreement_id"), agreementList);
+            }
+            //THE ROW
+            int count = 0;
+            for (String key: agreementMap.keySet()) {
+                model.addRow(new Object[0]);
+                model.setValueAt(false,count,0);
+                model.setValueAt(key, count, 1);
+                model.setValueAt(agreementMap.get(key).get(0), count, 2);
+                model.setValueAt(agreementMap.get(key).get(1), count, 3);
+                count++;
+            }
+        } catch (NullPointerException | SQLException ignored) {}
 
         //ADD BUTTON TO FORM
         buttonDeleteAgreement.setBounds(20,30,130,30);
@@ -109,8 +112,25 @@ public class AgreementTablePanel extends JPanel{
     }
 
     private void showActionPerformed(ActionEvent e){
-        dialogShowFrame = new ShowAgreementsFrame(this);
-        dialogShowFrame.show();
+        HashSet<Boolean> checkSet = new HashSet<>();
+        for(int i=0;i<table.getRowCount();i++)
+        {
+            Boolean checked=Boolean.valueOf(table.getValueAt(i, 0).toString());
+            String agreementId = table.getValueAt(i, 1).toString();
+
+            //DISPLAY
+            if(checked)
+            {
+                dialogShowFrame = new ShowAgreementsFrame(this, agreementId);
+                dialogShowFrame.show();
+            }
+            else{
+                checkSet.add(checked);
+            }
+        }
+//        if (!checkSet.isEmpty()){
+//            JOptionPane.showMessageDialog(null, "No checked agreement to show");
+//        }
     }
 
     private void addActionPerformed(ActionEvent e){
@@ -119,18 +139,17 @@ public class AgreementTablePanel extends JPanel{
     }
 
     private void deleteActionPerformed(ActionEvent e){
-//        for(int i=0;i<table.getRowCount();i++)
-//        {
-//            Boolean checked=Boolean.valueOf(table.getValueAt(i, 0).toString());
-//            String agreementId = table.getValueAt(i, 2).toString();
-//
-//            //DISPLAY
-//            if(checked)
-//            {
-//                agreementDbTable.deleteRow(agreementId);
-//                JOptionPane.showMessageDialog(null, "Deleted: " + agreementId);
-//            }
-//        }
+        for(int i=0;i<table.getRowCount();i++)
+        {
+            Boolean checked=Boolean.valueOf(table.getValueAt(i, 0).toString());
+            String agreementId = table.getValueAt(i, 1).toString();
+
+            if(checked)
+            {
+                agreementDbTable.deleteRow(agreementId);
+                JOptionPane.showMessageDialog(null, "Deleted: " + agreementId);
+            }
+        }
 
         MainFrame mainFrame = Main.getMainFrame();
         AgreementPanel agreementPanel = mainFrame.getAgrementPanel();
