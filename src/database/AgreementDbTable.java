@@ -30,7 +30,7 @@ public class AgreementDbTable {
         ResultSet resultSet = null;
         try {
             stmt = conn.createStatement();
-            String sql = "SELECT * FROM agreement;";
+            String sql = "SELECT * FROM agreement_data;";
             resultSet = stmt.executeQuery(sql);
         } catch (SQLException ignored) {
         }

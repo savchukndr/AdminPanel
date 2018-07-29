@@ -277,52 +277,72 @@ public class AddAgreementFrame extends JFrame{
         pack();
     }
 
-    private void addActionPerformed(ActionEvent e){
-        System.out.println((String) chainList.getSelectedItem()); //Chain into data base
-        System.out.println((String) modelStore.getSelectedItem()); //Store into data base
-        System.out.println((String) productTypeList.getSelectedItem()); //Store into data base
-        System.out.println((String) modelProduct.getSelectedItem()); //Store into data base
+    private void addActionPerformed(ActionEvent e) {
+        if (agreementTitleTextField.getText().equals("") || productCountTextField.getText().equals("") || shelfPositionTextField.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Some fields are empty!!!");
+        } else {
+            System.out.println((String) chainList.getSelectedItem()); //Chain into data base
+            System.out.println((String) modelStore.getSelectedItem()); //Store into data base
+            System.out.println((String) productTypeList.getSelectedItem()); //Store into data base
+            System.out.println((String) modelProduct.getSelectedItem()); //Store into data base
 
-        String agreementTitle = agreementTitleTextField.getText();
-        String productCount = productCountTextField.getText();
-        String shelfPosition = shelfPositionTextField.getText();
-        String selectedStoreTitle = (String) modelStore.getSelectedItem();
-        String selectedProductTitle = (String) modelProduct.getSelectedItem();
+            String agreementTitle = agreementTitleTextField.getText();
+            String productCount = productCountTextField.getText();
+            String shelfPosition = shelfPositionTextField.getText();
+            String selectedStoreTitle = (String) modelStore.getSelectedItem();
+            String selectedProductTitle = (String) modelProduct.getSelectedItem();
 
-        int storeId = 0;
-        int productId = 0;
-        int agreementId = 0;
-        ResultSet resSet;
-        try {
-            resSet = agreementDbTable.selectStoreID(selectedStoreTitle);
-            while(resSet.next()){
-                storeId = Integer.parseInt(resSet.getString("id_store"));
+            //-----
+            ResultSet resultSet = agreementDbTable.selectAll();
+            ArrayList<String> queryList = new ArrayList<>();
+            try {
+                while(resultSet.next()){
+                    queryList.add(resultSet.getString("title").trim().toLowerCase());
+                }
+            } catch (SQLException e1) {
+                e1.printStackTrace();
             }
+            if(!queryList.contains(agreementTitleTextField.getText().toLowerCase())) {
+                int storeId = 0;
+                int productId = 0;
+                int agreementId = 0;
+                ResultSet resSet;
+                try {
+                    resSet = agreementDbTable.selectStoreID(selectedStoreTitle);
+                    while (resSet.next()) {
+                        storeId = Integer.parseInt(resSet.getString("id_store"));
+                    }
 
-            resSet = agreementDbTable.selectProductID(selectedProductTitle);
-            while(resSet.next()){
-                productId = Integer.parseInt(resSet.getString("id_product"));
+                    resSet = agreementDbTable.selectProductID(selectedProductTitle);
+                    while (resSet.next()) {
+                        productId = Integer.parseInt(resSet.getString("id_product"));
+                    }
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                }
+
+                //add data into agreement
+                DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss");
+                Date date = new Date();
+                dateTime = dateFormat.format(date);
+                agreementDbTable.insertAgreement(storeId);
+                try {
+                    resSet = agreementDbTable.selectAgreementID(storeId);
+                    while (resSet.next()) {
+                        agreementId = Integer.parseInt(resSet.getString("id_agreement"));
+                    }
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                }
+
+                //add data into agreement_data
+                agreementDbTable.insertAgreementData(agreementTitle, Integer.parseInt(productCount), Integer.parseInt(shelfPosition), productId, agreementId);
+                this.dispose();
+            }else {
+                JOptionPane.showMessageDialog(null, "Agreement with such title already exist!");
+                agreementTitleTextField.setText("");
             }
-        } catch (SQLException e1) {
-            e1.printStackTrace();
         }
-
-        //add data into agreement
-        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd-HH:mm:ss");
-        Date date = new Date();
-        dateTime = dateFormat.format(date);
-        agreementDbTable.insertAgreement(storeId);
-        try {
-            resSet = agreementDbTable.selectAgreementID(storeId);
-            while(resSet.next()){
-                agreementId = Integer.parseInt(resSet.getString("id_agreement"));
-            }
-        } catch (SQLException e1) {
-            e1.printStackTrace();
-        }
-
-        //add data into agreement_data
-        agreementDbTable.insertAgreementData(agreementTitle, Integer.parseInt(productCount), Integer.parseInt(shelfPosition), productId, agreementId);
     }
 
     private void cancelActionPerformed(ActionEvent e){
