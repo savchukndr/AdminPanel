@@ -21,7 +21,7 @@ public class ShowImageFrame extends JFrame {
         setTitle(image_id);
         MyCanvas m = new MyCanvas(image_id);
         add(m);
-        setSize(400, 400);
+        setSize(600, 400);
         setVisible(true);
     }
 }
@@ -54,7 +54,7 @@ class MyCanvas extends Canvas {
     public void paint(Graphics g) {
         Image i = createImage(getImageFromRedis(imageID));
 //        Image newImage = i.getScaledInstance(20, 20, Image.SCALE_DEFAULT);
-        g.drawImage(i, 0, 0, 400, 400, this);
+        g.drawImage(i, 0, 0, 600, 400, this);
 
     }
 

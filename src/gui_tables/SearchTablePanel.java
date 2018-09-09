@@ -23,6 +23,10 @@ public class SearchTablePanel extends JPanel {
 
     private static final long serialVersionUID = 4L;
     private JTable table;
+    private JPanel panelTop, panelRight, panelBottom;
+    private JTextField searchTextField;
+    private JLabel labelListen;
+    private JButton buttonSearch, buttonShowImage, buttonDelete;
 
     /**
      * Create the panel.
@@ -32,30 +36,30 @@ public class SearchTablePanel extends JPanel {
         setLayout(new BorderLayout());
 
         // Panels
-        JPanel panelTop = new JPanel();
-        JPanel panelRight = new JPanel();
+        panelTop = new JPanel();
+        panelRight = new JPanel();
         panelRight.setLayout(new GridBagLayout());
-        JPanel panelBottom = new JPanel();
+        panelBottom = new JPanel();
         panelBottom.setLayout(new GridBagLayout());
 
         // Labels
 //        JLabel labelTabName = new JLabel("Main Page");
 //        panelTop.add(labelTabName);
-        JLabel labelListen = new JLabel();
+        labelListen = new JLabel();
         labelListen.setText("Press \"Search\" to start searching:");
 
         // Buttons
-        JButton buttonSearch = new JButton("Search");
+        buttonSearch = new JButton("Search");
         buttonSearch.addActionListener(this::searchActionPerformed);
         buttonSearch.setEnabled(true);
-        JButton buttonShowImage = new JButton("Show Image");
+        buttonShowImage = new JButton("Show Image");
         buttonShowImage.setBounds(20,30,130,30);
         buttonShowImage.addActionListener(this::showActionPerformed);
-        JButton buttonDelete = new JButton("Delete");
+        buttonDelete = new JButton("Delete");
 //        buttonDelete.addActionListener(this::deleteActionPerformed);
 
         //Text fields
-        JTextField searchTextField = new JTextField();
+        searchTextField = new JTextField();
         searchTextField.setPreferredSize( new Dimension( 200, 27) );
 
         // Adding scroll to main Text Area
@@ -64,6 +68,39 @@ public class SearchTablePanel extends JPanel {
         JScrollPane scrollTable=new JScrollPane(table);
         scrollTable.setViewportView(table);
 
+        add(panelTop, BorderLayout.CENTER);
+
+
+        panelTop.add(labelListen, new GridBagConstraints(0, 5, 1, 1, 1, 1,
+                GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL,
+                new Insets(0, 2, 100, 2), 2, 2));
+        panelTop.add(searchTextField, new GridBagConstraints(1, 5, 1, 1, 1, 1,
+                GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL,
+                new Insets(0, 2, 350, 2), 2, 2));
+        panelTop.add(buttonSearch, new GridBagConstraints(2, 5, 1, 1, 1, 1,
+                GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL,
+                new Insets(2, 2, 2, 2), 2, 2));
+
+
+        // Adding scroll with TextArea to panelRight
+        panelRight.add(scrollTable, new GridBagConstraints(0, 0, 1, 1, 1, 1,
+                GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL,
+                new Insets(2, 2, 0, 2), 2, 2));
+        panelBottom.add(buttonShowImage, new GridBagConstraints(0, 0, 1, 1, 1, 1,
+                GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL,
+                new Insets(2, 2, 0, 2), 2, 2));
+        panelBottom.add(buttonDelete, new GridBagConstraints(0, 1, 1, 1, 1, 1,
+                GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL,
+                new Insets(2, 2, 350, 2), 2, 2));
+
+
+        // Add to MainPanel layaout
+        add(panelTop, BorderLayout.NORTH);
+        add(panelRight, BorderLayout.CENTER);
+        add(panelBottom, BorderLayout.WEST);
+    }
+
+    private void showTableSerach(String str){
         DefaultTableModel model=new DefaultTableModel()
         {
             public Class<?> getColumnClass(int column)
@@ -109,7 +146,16 @@ public class SearchTablePanel extends JPanel {
 
         ReportDbTable reportDbTable = new ReportDbTable();
         try {
-            ResultSet resultSet = reportDbTable.selectSearch();
+            ResultSet resultSet = reportDbTable.selectByStoreSearch(str);
+            if (!resultSet.isBeforeFirst() ) {
+                resultSet = reportDbTable.selectByEstimation(str);
+                if (!resultSet.isBeforeFirst()){
+                    resultSet = reportDbTable.selectByAgreement(str);
+                    if (!resultSet.isBeforeFirst()){
+                        resultSet = reportDbTable.selectByDate(str);
+                    }
+                }
+            }
             HashMap<String, ArrayList<String>> searchMap = new HashMap<>();
             while(resultSet.next()){
                 ArrayList<String> reportList = new ArrayList<>();
@@ -143,39 +189,15 @@ public class SearchTablePanel extends JPanel {
             e.printStackTrace();
         }
 
-        add(panelTop, BorderLayout.CENTER);
 
-
-        panelTop.add(labelListen, new GridBagConstraints(0, 5, 1, 1, 1, 1,
-                GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL,
-                new Insets(0, 2, 100, 2), 2, 2));
-        panelTop.add(searchTextField, new GridBagConstraints(1, 5, 1, 1, 1, 1,
-                GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL,
-                new Insets(0, 2, 350, 2), 2, 2));
-        panelTop.add(buttonSearch, new GridBagConstraints(2, 5, 1, 1, 1, 1,
-                GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL,
-                new Insets(2, 2, 2, 2), 2, 2));
-
-
-        // Adding scroll with TextArea to panelRight
-        panelRight.add(scrollTable, new GridBagConstraints(0, 0, 1, 1, 1, 1,
-                GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL,
-                new Insets(2, 2, 0, 2), 2, 2));
-        panelBottom.add(buttonShowImage, new GridBagConstraints(0, 0, 1, 1, 1, 1,
-                GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL,
-                new Insets(2, 2, 0, 2), 2, 2));
-        panelBottom.add(buttonDelete, new GridBagConstraints(0, 1, 1, 1, 1, 1,
-                GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL,
-                new Insets(2, 2, 350, 2), 2, 2));
-
-
-        // Add to MainPanel layaout
-        add(panelTop, BorderLayout.NORTH);
-        add(panelRight, BorderLayout.CENTER);
-        add(panelBottom, BorderLayout.WEST);
     }
 
     private void searchActionPerformed(ActionEvent e) {
+        if (searchTextField.getText().equals("")){
+            JOptionPane.showMessageDialog(null, "Search field is empty.");
+        } else {
+            showTableSerach(searchTextField.getText());
+        }
     }
 
     private void showActionPerformed(ActionEvent e) {
