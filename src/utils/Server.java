@@ -88,8 +88,8 @@ public class Server {
 
     private String runPython(String key_image, String shelf) {
         String[] cmd = {
-                "C:\\Users\\savch\\PycharmProjects\\template-matcher\\venv\\Scripts\\python.exe",
-                "C:\\Users\\savch\\PycharmProjects\\template-matcher\\main.py",
+                "python3",
+                "/Users/andriisavchuk/PycharmProjects/template-matcher-windows/main.py",
                 key_image,
                 shelf,
         };
